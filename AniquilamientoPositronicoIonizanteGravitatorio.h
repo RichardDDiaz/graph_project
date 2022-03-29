@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 //Funciones referidas a la estructura del GRAFO solamente (vertices y lados, basicamente)
 //y no a sus colores o el orden en que se correra Greedy.
 //es decir, solo referidas a la ESTRUCTURA del grafo.
