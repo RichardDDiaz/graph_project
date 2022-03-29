@@ -1,4 +1,8 @@
+#ifndef _PARSER_H
+#define _PARSER_H
 #include <stdbool.h>
+#include "AniquilamientoPositronicoIonizanteGravitatorio.h"
+
 
 // funcion hash
 int hash(char *str);
@@ -13,3 +17,5 @@ void emparejar_vertices(int vOne, int vTwo);
 // cambiar los tipos de datos de entrada y salida 
 // construccion del grafo
 void run_parser(int grafo)
+
+#endif //_PARSER_H
