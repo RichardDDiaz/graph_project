@@ -29,12 +29,14 @@ typedef struct _AristaSt * Arista;
 typedef struct _GrafoSt
 {
 	u32 nver; // cantidad de vertices
-	u32 nlados; // cantidad de lados
-	u32 ncolor; // cantidad de colores
+	u32 mlados; // cantidad de lados
+	u32 ccolor; // cantidad de colores
 	u32 delta; // grado maximo del grafo
-	Vertice * verticesArr; // Arreglo de punteros de VerticeSt
-	Vertice * verticesArr2; // Arreglo de punteros de VerticeSt Orden Natural
-	Arista * aristaArr; // Arreglo con punteros a estructuras AristaSt
+
+	Vertice * vertices; // Arreglo de punteros de VerticeSt
+	Vertice * vertOrdNat; // Arreglo de punteros de VerticeSt Orden Natural
+
+	//Arista * aristaArr; // Arreglo con punteros a estructuras AristaSt
 } GrafoSt;
 
 #endif //_ESTRUCTURAGRAFO_H

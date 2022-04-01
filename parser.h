@@ -16,6 +16,6 @@ void emparejar_vertices(int vOne, int vTwo);
 
 // cambiar los tipos de datos de entrada y salida 
 // construccion del grafo
-void run_parser(int grafo)
+void run_parser(Grafo grafo);
 
 #endif //_PARSER_H
