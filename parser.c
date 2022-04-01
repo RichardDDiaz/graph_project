@@ -94,7 +94,7 @@ void run_parser(Grafo g){
             // ...
             printf("%lu %lu\n", vA, vB);
             count_m++;
-            g->mlados++;
+            //g->mlados++;
         }
         // la linea no lo cumple 
         else{
