@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "EstructuraGrafo.h"
 #include "AniquilamientoPositronicoIonizanteGravitatorio.h"
 #include "parser.h"
 

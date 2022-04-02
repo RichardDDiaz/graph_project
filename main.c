@@ -8,7 +8,6 @@
 
 #include "AniquilamientoPositronicoIonizanteGravitatorio.h"
 #include "EstructuraGrafo.h"
-#include "parser.h"
 
 void main(){
     printf("Proyecto GRAFO iniciado");
