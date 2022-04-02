@@ -4,6 +4,8 @@
 #include <string.h>
 #include "parser.h"
 
+#define UNASSIGNED_COLOR 4294967295
+
 
 Grafo ConstruccionDelGrafo()
 {
@@ -25,6 +27,78 @@ Grafo ConstruccionDelGrafo()
 	return g;
 }
 
+Vertice buscarVertice(Grafo g, u32 nombreVertice){
+    /*
+    Funcion hash: un simple u32 % nver 
+    */
+    //[0,...,key_hash,...,nver-1]
+    u32 key_hash = nombreVertice % g->nver-1;
+    if (g->vertices[key_hash] == NULL){
+        //crear el vertice
+        Vertice v = malloc(sizeof(struct _VerticeSt));
+        v->nombrev = nombreVertice;
+        v->gradov = 0;
+        v->colorv = UNASSIGNED_COLOR;
+        return v;
+    }
+    //el else creo que lo podemos quitar por que hay un return en el IF
+    else{
+        //variable flag: si encuentro el vertice, cambio el valor de flag a 
+        //la posicion de esa celda en el arreglo
+        u32 kh_value_real = -1;
+        
+        // al finalizar este ciclo o la funcion retorno el vertice
+        // por que lo encontro o salio del ciclo porque 
+        // encontro una celda vacia
+        while(g->vertices[key_hash] != NULL && kh_value_real == -1){
+            if(g->vertices[key_hash]->nombrev == nombreVertice){
+                kh_value_real = key_hash;
+                // no se si este return aqui es una buena practica
+                // y no quiero usar un break o poner el kh_value_real = -2
+                // por ejemplo, pero si tampoco quiero usar un if al finalizar
+                // el ciclo para ver si encontre el vertice por que aqui lo 
+                // encontre.
+
+                //entonces si lo dejamos asi kh_value_real no haria falta
+                //para nada de nada.
+                return g->vertices[key_hash];
+            }
+            key_hash = (key_hash++) % g->nver-1;
+        }
+
+        //seguir buscando apartir de la posicion de la celda vacia,
+        //pero no olviar que ya tenemos un posible lugar para el vertice
+        u32 empty_cell = key_hash;
+ 
+        // mientras no le diste la vuelta entera al ciclo.
+        while(key_hash != (nombreVertice % g->nver-1)-1){
+            // si encontras el vertice
+            if(g->vertices[key_hash] != NULL 
+                    && g->vertices[key_hash]->nombrev == nombreVertice){
+                
+                // no se si este return aqui es una buena practica
+                // y no quiero usar un break
+                return g->vertices[key_hash];
+            }
+            key_hash = (key_hash++) % g->nver-1;
+        }
+
+        //si salis le diste la vuelta y no encontraste el vertice =>
+        //crearlo y asignarlo a la posicion vacia
+        Vertice v = malloc(sizeof(struct _VerticeSt));
+        v->nombrev = nombreVertice;
+        v->gradov = 0;
+        v->colorv = UNASSIGNED_COLOR;
+        g->vertices[empty_cell] = v;
+        return v;
+    }
+}
+
+
+/*
+Ejecucion de la carga de datos en un grafo g, apartir de un archivo de texto
+pasado por consola.
+*/
 void run_parser(Grafo g){
     char path_name[100];
     printf("\n Indique ruta del archivo: \n");
@@ -92,6 +166,14 @@ void run_parser(Grafo g){
             // ...
             // ... code here
             // ...
+            // retorna puntero al vertice creado o encontrado
+            Vertice verticeA = buscarVertice(g, vA);
+            Vertice verticeB = buscarVertice(g, vB);
+            //agregar vertice como vecino de otro y viceversa.
+            //emparejarVertices(verticeA, verticeB);
+
+            // chequear el nuevo grado del grafo
+
             printf("%lu %lu\n", vA, vB);
             count_m++;
             //g->mlados++;

@@ -7,9 +7,9 @@
 // funcion hash
 int hash(char *str);
 
-// cambiar los tipos de datos pero buscar el vertice  y retornar
-// el vertice o null
-bool buscar_vertice(int v, int *vertices);
+// funcion que busca el vertice en el grafo y si no existe lo crea
+// finalmente retornando un puntero al vertice.
+Vertice buscar_vertice(Grafo g, u32 nombreVertice);
 
 // poner el vertice1 como vecino del vertice2 y viceversa
 void emparejar_vertices(int vOne, int vTwo);
