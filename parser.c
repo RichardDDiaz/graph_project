@@ -5,6 +5,7 @@
 #include "parser.h"
 
 #define UNASSIGNED_COLOR 4294967295
+#define ERROR 4294967295
 
 
 Grafo ConstruccionDelGrafo()
@@ -27,30 +28,44 @@ Grafo ConstruccionDelGrafo()
 	return g;
 }
 
+
+//Iniciamos todos los espacios de memoria en NULL
+void inicializarNullVertices(Grafo g){
+    for(u32 i = 0; i < g->nver; i++){
+        g->vertices[i] = NULL;
+    }
+}
+
+
+// Busca/crea el vertice 
 Vertice buscarVertice(Grafo g, u32 nombreVertice){
     /*
     Funcion hash: un simple u32 % nver 
     */
     //[0,...,key_hash,...,nver-1]
-    u32 key_hash = nombreVertice % g->nver-1;
+    u32 key_hash = nombreVertice % g->nver;
+
     if (g->vertices[key_hash] == NULL){
         //crear el vertice
         Vertice v = malloc(sizeof(struct _VerticeSt));
         v->nombrev = nombreVertice;
         v->gradov = 0;
         v->colorv = UNASSIGNED_COLOR;
+        g->vertices[key_hash] = v;
+        v->vecinos = NULL;
         return v;
     }
     //el else creo que lo podemos quitar por que hay un return en el IF
     else{
         //variable flag: si encuentro el vertice, cambio el valor de flag a 
         //la posicion de esa celda en el arreglo
-        u32 kh_value_real = -1;
+        u32 kh_value_real = ERROR;
         
         // al finalizar este ciclo o la funcion retorno el vertice
         // por que lo encontro o salio del ciclo porque 
         // encontro una celda vacia
-        while(g->vertices[key_hash] != NULL && kh_value_real == -1){
+        while(g->vertices[key_hash] != NULL && kh_value_real == ERROR){
+            // Si ya existe el vertice
             if(g->vertices[key_hash]->nombrev == nombreVertice){
                 kh_value_real = key_hash;
                 // no se si este return aqui es una buena practica
@@ -63,15 +78,15 @@ Vertice buscarVertice(Grafo g, u32 nombreVertice){
                 //para nada de nada.
                 return g->vertices[key_hash];
             }
-            key_hash = (key_hash++) % g->nver-1;
+            key_hash = (key_hash++) % g->nver;
         }
-
         //seguir buscando apartir de la posicion de la celda vacia,
         //pero no olviar que ya tenemos un posible lugar para el vertice
         u32 empty_cell = key_hash;
  
-        // mientras no le diste la vuelta entera al ciclo.
-        while(key_hash != (nombreVertice % g->nver-1)-1){
+    /*
+        // mientras no le diste la vuelta entra al ciclo.
+        while(key_hash != (nombreVertice % g->nver)){
             // si encontras el vertice
             if(g->vertices[key_hash] != NULL 
                     && g->vertices[key_hash]->nombrev == nombreVertice){
@@ -80,18 +95,52 @@ Vertice buscarVertice(Grafo g, u32 nombreVertice){
                 // y no quiero usar un break
                 return g->vertices[key_hash];
             }
-            key_hash = (key_hash++) % g->nver-1;
+            key_hash = (key_hash++) % g->nver;
         }
-
+    */
         //si salis le diste la vuelta y no encontraste el vertice =>
         //crearlo y asignarlo a la posicion vacia
         Vertice v = malloc(sizeof(struct _VerticeSt));
         v->nombrev = nombreVertice;
         v->gradov = 0;
         v->colorv = UNASSIGNED_COLOR;
+        v->vecinos = NULL; // vecinos = mmalloc (size de Vertice * delta de v)
         g->vertices[empty_cell] = v;
+        
         return v;
     }
+}
+
+// Establece la vecindad entre dos vecinos
+void emparejarVertices(Vertice verticeA,Vertice verticeB){
+    // Aumentamos el grado de los vertices
+    verticeA->gradov +=1;
+    verticeB->gradov +=1;
+
+    int gradoA = verticeA->gradov;
+    int gradoB = verticeB->gradov;
+
+
+    // Reasignar el arreeglo de vecinos
+    verticeA->vecinos = realloc(verticeA->vecinos,gradoA );
+    verticeB->vecinos = realloc(verticeB->vecinos,gradoB );
+
+    // Enlasamos los vecinos
+    verticeA->vecinos[gradoA-1] = verticeB;
+    verticeB->vecinos[gradoB-1] = verticeA;
+
+
+    // imprimimos vecinos de A
+    printf("nombre vA: %lu \n grado: %lu\n", verticeA->nombrev, verticeA->gradov);
+    for(int i=0; i<gradoA; i++){
+        printf("vecino %i : %lu\n", i, verticeA->vecinos[i]->nombrev);
+    }
+    // imprimimos vecinos de B
+    printf("nombre vA: %lu \n grado: %lu\n", verticeB->nombrev, verticeB->gradov);
+    for(int i=0; i<gradoB; i++){
+        printf("vecino %i : %lu\n", i, verticeB->vecinos[i]->nombrev);
+    }
+
 }
 
 
@@ -140,6 +189,7 @@ void run_parser(Grafo g){
     g->nver = nver;
     g->mlados = mlado;
     g->vertices = malloc(sizeof(Vertice) * nver);
+    inicializarNullVertices(g);
     g->vertOrdNat = malloc(sizeof(Vertice) * nver);
 
     // lectura de los lados con vertices
@@ -170,7 +220,7 @@ void run_parser(Grafo g){
             Vertice verticeA = buscarVertice(g, vA);
             Vertice verticeB = buscarVertice(g, vB);
             //agregar vertice como vecino de otro y viceversa.
-            //emparejarVertices(verticeA, verticeB);
+            emparejarVertices(verticeA, verticeB);
 
             // chequear el nuevo grado del grafo
 
