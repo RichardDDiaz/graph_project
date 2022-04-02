@@ -4,29 +4,9 @@
 #include <string.h>
 #include "parser.h"
 
+
 #define UNASSIGNED_COLOR 4294967295
 #define ERROR 4294967295
-
-
-Grafo ConstruccionDelGrafo()
-{
-	//creo un grafo y le reservo memoria
-	Grafo g = malloc(sizeof(GrafoSt));
-	//chequeo que malloc haya terminado exitosamente
-    if (g == NULL) {
-        printf("No hay suficiente memoria para el grafo :( )\n");
-    }
-	//inicializo los datos
-	g->nver = 0;
-	g->mlados = 0 ;
-	g->ccolor = 0;
-	g->delta  = 0;
-	g->vertices = NULL;
-    g->vertOrdNat = NULL;
-
-	run_parser(g);
-	return g;
-}
 
 
 //Iniciamos todos los espacios de memoria en NULL
@@ -37,79 +17,47 @@ void inicializarNullVertices(Grafo g){
 }
 
 
+Vertice crearDefaultVertice(u32 nombreVertice){
+    Vertice v = malloc(sizeof(struct _VerticeSt));
+    v->nombrev = nombreVertice;
+    v->gradov = 0;
+    v->colorv = UNASSIGNED_COLOR;
+    v->vecinos = NULL; // vecinos = mmalloc (size de Vertice * delta de v)
+    return v;
+}
+
+
 // Busca/crea el vertice 
 Vertice buscarVertice(Grafo g, u32 nombreVertice){
-    /*
-    Funcion hash: un simple u32 % nver 
-    */
-    //[0,...,key_hash,...,nver-1]
+    /* Funcion hash: un simple u32 % nver */
+    // [0,...,key_hash,...,nver-1]
     u32 key_hash = nombreVertice % g->nver;
 
     if (g->vertices[key_hash] == NULL){
         //crear el vertice
-        Vertice v = malloc(sizeof(struct _VerticeSt));
-        v->nombrev = nombreVertice;
-        v->gradov = 0;
-        v->colorv = UNASSIGNED_COLOR;
-        g->vertices[key_hash] = v;
-        v->vecinos = NULL;
-        return v;
+        g->vertices[key_hash] = crearDefaultVertice(nombreVertice);
+        return g->vertices[key_hash];
     }
-    //el else creo que lo podemos quitar por que hay un return en el IF
-    else{
-        //variable flag: si encuentro el vertice, cambio el valor de flag a 
-        //la posicion de esa celda en el arreglo
-        u32 kh_value_real = ERROR;
-        
-        // al finalizar este ciclo o la funcion retorno el vertice
-        // por que lo encontro o salio del ciclo porque 
-        // encontro una celda vacia
-        while(g->vertices[key_hash] != NULL && kh_value_real == ERROR){
-            // Si ya existe el vertice
-            if(g->vertices[key_hash]->nombrev == nombreVertice){
-                kh_value_real = key_hash;
-                // no se si este return aqui es una buena practica
-                // y no quiero usar un break o poner el kh_value_real = -2
-                // por ejemplo, pero si tampoco quiero usar un if al finalizar
-                // el ciclo para ver si encontre el vertice por que aqui lo 
-                // encontre.
-
-                //entonces si lo dejamos asi kh_value_real no haria falta
-                //para nada de nada.
-                return g->vertices[key_hash];
-            }
-            key_hash = (key_hash++) % g->nver;
+    // al finalizar este ciclo o la funcion retorno el vertice
+    // por que lo encontro o salio del ciclo porque 
+    // encontro una celda vacia
+    while(g->vertices[key_hash] != NULL){
+        // Si ya existe el vertice
+        if(g->vertices[key_hash]->nombrev == nombreVertice){
+            return g->vertices[key_hash];
         }
-        //seguir buscando apartir de la posicion de la celda vacia,
-        //pero no olviar que ya tenemos un posible lugar para el vertice
-        u32 empty_cell = key_hash;
- 
-    /*
-        // mientras no le diste la vuelta entra al ciclo.
-        while(key_hash != (nombreVertice % g->nver)){
-            // si encontras el vertice
-            if(g->vertices[key_hash] != NULL 
-                    && g->vertices[key_hash]->nombrev == nombreVertice){
-                
-                // no se si este return aqui es una buena practica
-                // y no quiero usar un break
-                return g->vertices[key_hash];
-            }
-            key_hash = (key_hash++) % g->nver;
-        }
-    */
-        //si salis le diste la vuelta y no encontraste el vertice =>
-        //crearlo y asignarlo a la posicion vacia
-        Vertice v = malloc(sizeof(struct _VerticeSt));
-        v->nombrev = nombreVertice;
-        v->gradov = 0;
-        v->colorv = UNASSIGNED_COLOR;
-        v->vecinos = NULL; // vecinos = mmalloc (size de Vertice * delta de v)
-        g->vertices[empty_cell] = v;
-        
-        return v;
+        key_hash = (key_hash++) % g->nver;
     }
+    // si salis del ciclo pero no de la funcion, significa que 
+    // encontraste una celda vacia => no existe el vertice
+    // nombreVertice, por que por ejemplo si en la interacion anterior 
+    // uno de los lados era nombreVertice, entonces esta celda libre
+    // que fue la primera que encontramos, deberia tener a nombreVertice
+    g->vertices[key_hash] = crearDefaultVertice(nombreVertice);
+    
+    return g->vertices[key_hash];
 }
+
 
 // Establece la vecindad entre dos vecinos
 void emparejarVertices(Vertice verticeA,Vertice verticeB){
@@ -122,25 +70,12 @@ void emparejarVertices(Vertice verticeA,Vertice verticeB){
 
 
     // Reasignar el arreeglo de vecinos
-    verticeA->vecinos = realloc(verticeA->vecinos,gradoA );
-    verticeB->vecinos = realloc(verticeB->vecinos,gradoB );
+    verticeA->vecinos = realloc(verticeA->vecinos,gradoA);
+    verticeB->vecinos = realloc(verticeB->vecinos,gradoB);
 
     // Enlasamos los vecinos
     verticeA->vecinos[gradoA-1] = verticeB;
     verticeB->vecinos[gradoB-1] = verticeA;
-
-
-    // imprimimos vecinos de A
-    printf("nombre vA: %lu \n grado: %lu\n", verticeA->nombrev, verticeA->gradov);
-    for(int i=0; i<gradoA; i++){
-        printf("vecino %i : %lu\n", i, verticeA->vecinos[i]->nombrev);
-    }
-    // imprimimos vecinos de B
-    printf("nombre vA: %lu \n grado: %lu\n", verticeB->nombrev, verticeB->gradov);
-    for(int i=0; i<gradoB; i++){
-        printf("vecino %i : %lu\n", i, verticeB->vecinos[i]->nombrev);
-    }
-
 }
 
 
@@ -155,6 +90,7 @@ void run_parser(Grafo g){
     printf("filename: %s\n", path_name);
 
     assert(scan_path_name > 0 && "Error al leer ruta del archivo");
+    
 
     FILE *file = fopen(path_name, "r");
     assert(file != NULL && "Error al abrir archivo");

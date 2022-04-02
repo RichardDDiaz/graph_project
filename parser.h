@@ -1,8 +1,9 @@
 #ifndef _PARSER_H
 #define _PARSER_H
 #include <stdbool.h>
-#include "AniquilamientoPositronicoIonizanteGravitatorio.h"
+#include "EstructuraGrafo.h"
 
+#include "AniquilamientoPositronicoIonizanteGravitatorio.h"
 
 // funcion hash
 int hash(char *str);
