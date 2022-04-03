@@ -109,6 +109,7 @@ pasado por consola.
 */
 bool run_parser(Grafo g){
     char path_name[100];
+    int nscanf = 0;
     printf("\n Indique ruta del archivo: \n");
     int scan_path_name = scanf("%s", path_name);
     printf("filename: %s\n", path_name);
@@ -128,17 +129,20 @@ bool run_parser(Grafo g){
     
     // leer  el primer caracter del archivo
     char firstchar;
-    int count_fscanf = fscanf(file,"%c", &firstchar);
+    nscanf = fscanf(file,"%c", &firstchar);
+    if(nscanf < 1){DestruccionDelGrafo(g); return false;}
     
     /* recorre los comentarios cuando el primer caracter es 'c' 
        cuando el primer caracter sea != de 'c', en teoria ya estamos
        en la parte de lectura de los lados */
     while(!feof(file) && firstchar == 'c'){
         while(firstchar != EOF && firstchar != '\n'){
-            fscanf(file,"%c", &firstchar);
+            nscanf = fscanf(file,"%c", &firstchar);
+            if(nscanf < 1){DestruccionDelGrafo(g); return false;}
         }
         // te paras en el siguiente primer caracter
-        fscanf(file,"%c", &firstchar);
+        nscanf=  fscanf(file,"%c", &firstchar);
+        if(nscanf < 1){DestruccionDelGrafo(g); return false;}
     }
 
     u32 nver;
@@ -177,8 +181,9 @@ bool run_parser(Grafo g){
             no se como hacer para que lo ignore sin hacer que lo asigne a una 
             variable que no usaremos(lo probe con la var u32 vA y tampoco)
         */
-        fscanf(file,"%c", &firstchar);
-        u32 check_scan = fscanf(file,"%c", &firstchar);
+        nscanf = fscanf(file,"%c", &firstchar);
+        if(nscanf < 1){DestruccionDelGrafo(g); return false;}
+        int check_scan = fscanf(file,"%c", &firstchar);
         //printf("firstchar: %c \n",firstchar);
         // estas al final de archivo o Error de lectura
         if (check_scan == EOF){
