@@ -4,6 +4,8 @@
 #include "AniquilamientoPositronicoIonizanteGravitatorio.h"
 #include "parser.h"
 
+#define ErrorGrafo 4294967295 
+
 Grafo ConstruccionDelGrafo()
 {
 	//creo un grafo y le reservo memoria
@@ -56,4 +58,33 @@ void DestruccionDelGrafo(Grafo G){
   	G->vertices = NULL;
   	free(G);
   	G = NULL;
+}
+
+
+u32 NumeroDeVertices(Grafo G){
+  return (G->nver);
+}
+
+
+u32 NumeroDeLados(Grafo G){
+  return (G->mlados);
+}
+
+
+u32 Delta(Grafo G){
+  return (G->delta);
+}
+
+u32 Nombre(u32 i,Grafo G){
+  return (G->vertOrdNat[i]->nombrev);
+}
+
+
+u32 Grado(u32 i,Grafo G){
+	if (i >= G->nver){
+  		return (ErrorGrafo);
+  	}
+  	else{
+  		return (G->vertOrdNat[i]->gradov);
+  	}
 }
