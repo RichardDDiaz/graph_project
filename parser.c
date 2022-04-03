@@ -84,6 +84,30 @@ void emparejarVertices(Vertice verticeA,Vertice verticeB){
 }
 
 
+
+// Compara los vertices indicando cual es mayor
+int cmpfunc (const void * a, const void * b) {
+
+  //fijense en este truquito
+  Vertice al =*((Vertice*)a);
+  Vertice bl =*((Vertice*)b);
+
+
+  if (al->nombrev < bl->nombrev)
+  {
+    return -1;
+  }
+  if (al->nombrev > bl->nombrev)
+  {
+    return 1;
+
+  }else{
+    return 0;
+  }
+}
+
+
+
 /*
 Ejecucion de la carga de datos en un grafo g, apartir de un archivo de texto
 pasado por consola.
@@ -176,7 +200,7 @@ void run_parser(Grafo g){
 
             // chequear el nuevo grado del grafo
 
-            printf("%lu %lu\n", vA, vB);
+            //printf("%lu %lu\n", vA, vB);
             count_m++;
             //g->mlados++;
             //printf("lado: %lu\n",count_m);
@@ -185,10 +209,13 @@ void run_parser(Grafo g){
         else{
             printf("liberar memoria, retornar NULL 2\n");
             DestruccionDelGrafo(g);
-            //exit(EXIT_FAILURE);
+            exit(EXIT_FAILURE);
         }
     }
-    printf("end while principal \n");
+    
+    // Orden Natural
+    printf("Orden natural \n");
+    qsort(g->vertices, g->nver, sizeof(Vertice), cmpfunc);
 
-    //if (g->mlados < m)
+    //if (g->mlados < m){}
 }
