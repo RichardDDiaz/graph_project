@@ -62,29 +62,37 @@ void DestruccionDelGrafo(Grafo G){
 
 
 u32 NumeroDeVertices(Grafo G){
-  return (G->nver);
+  return G->nver;
 }
 
 
 u32 NumeroDeLados(Grafo G){
-  return (G->mlados);
+  return G->mlados;
 }
 
 
 u32 Delta(Grafo G){
-  return (G->delta);
+  return G->delta;
 }
 
 u32 Nombre(u32 i,Grafo G){
-  return (G->vertOrdNat[i]->nombrev);
+  return G->vertOrdNat[i]->nombrev;
 }
 
 
 u32 Grado(u32 i,Grafo G){
 	if (i >= G->nver){
-  		return (ErrorGrafo);
+  		return ErrorGrafo;
   	}
   	else{
-  		return (G->vertOrdNat[i]->gradov);
+  		return G->vertOrdNat[i]->gradov;
   	}
+}
+
+u32 IndiceONVecino(u32 j,u32 k,Grafo G){
+	if (k < NumeroDeVertices(G) && G->vertOrdNat[k]->gradov > j &&
+		G->vertOrdNat[k]->vecinos[j]->nombrev == G->vertOrdNat[j]->nombrev){
+			return j;
+	}
+	return ErrorGrafo;
 }
