@@ -24,7 +24,7 @@ Grafo ConstruccionDelGrafo()
 	return g;
 }
 
-
+/*
 void DestruccionDelGrafo(Grafo G){
 	free(G->vertices);
 	G->vertices = NULL;
@@ -34,4 +34,26 @@ void DestruccionDelGrafo(Grafo G){
 
 	free(G);
 	G = NULL;
+}
+*/
+
+void DestruccionDelGrafo(Grafo G){
+	// vaciar los arreglos de punteros de cada vecino de cada vertice
+	for(u32 j=0 ; j < G->nver; j++){
+		for(u32 k=0 ; k<G->vertices[j]->gradov; k++){
+      		G->vertices[j]->vecinos[k] = NULL;
+    	}
+    	free(G->vertices[j]->vecinos);
+		G->vertices[j]->vecinos = NULL;
+	}
+	// eliminar cada vertice del arreglo de punteros de vertices
+	for(u32 l=0 ; l<G->nver; l++){
+		
+		free(G->vertices[l]);
+		G->vertices[l] = NULL;
+	}
+	free(G->vertices);
+  	G->vertices = NULL;
+  	free(G);
+  	G = NULL;
 }

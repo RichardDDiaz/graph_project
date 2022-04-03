@@ -21,6 +21,6 @@ void inicializarNullVertices(Grafo g);
 
 // cambiar los tipos de datos de entrada y salida 
 // Construccion del grafo
-void run_parser(Grafo grafo);
+bool run_parser(Grafo grafo);
 
 #endif //_PARSER_H

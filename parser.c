@@ -87,20 +87,15 @@ void emparejarVertices(Vertice verticeA,Vertice verticeB){
 
 // Compara los vertices indicando cual es mayor
 int cmpfunc (const void * a, const void * b) {
-
-  //fijense en este truquito
   Vertice al =*((Vertice*)a);
   Vertice bl =*((Vertice*)b);
 
-
-  if (al->nombrev < bl->nombrev)
-  {
+  if (al->nombrev < bl->nombrev){
     return -1;
   }
-  if (al->nombrev > bl->nombrev)
-  {
+  
+  if (al->nombrev > bl->nombrev){
     return 1;
-
   }else{
     return 0;
   }
@@ -112,17 +107,23 @@ int cmpfunc (const void * a, const void * b) {
 Ejecucion de la carga de datos en un grafo g, apartir de un archivo de texto
 pasado por consola.
 */
-void run_parser(Grafo g){
+bool run_parser(Grafo g){
     char path_name[100];
     printf("\n Indique ruta del archivo: \n");
     int scan_path_name = scanf("%s", path_name);
     printf("filename: %s\n", path_name);
-
-    assert(scan_path_name > 0 && "Error al leer ruta del archivo");
-    
+    if (scan_path_name <= 0){
+        printf("Error al leer ruta del archivo");
+        DestruccionDelGrafo(g);
+        return false;
+    }
 
     FILE *file = fopen(path_name, "r");
-    assert(file != NULL && "Error al abrir archivo");
+    if (file == NULL){
+        printf("Error al abrir archivo");
+        DestruccionDelGrafo(g);
+        return false;
+    }
     printf("Archivo Abierto\n");
     
     // leer  el primer caracter del archivo
@@ -142,12 +143,17 @@ void run_parser(Grafo g){
 
     u32 nver;
     u32 mlado;
-    char pseudo_edge[5]; // +1 por caracter de temrinación
+    char pseudo_edge[5]; // +1 por caracter de terminación
     // si el primer caracter es EOF, no hay mas datos
-    assert(firstchar == 'p' 
-            && fscanf(file,"%s %lu %lu",pseudo_edge , &nver, &mlado) > 0
-            && "Primer caracter no es 'p' o no formato (p edge n m)");
-    assert(!strcmp("edge",pseudo_edge) && "no es edge, formato incorrecto");
+    if (firstchar != 'p' || 
+        fscanf(file,"%s %lu %lu",pseudo_edge , &nver, &mlado) <= 0 ||
+        strcmp("edge",pseudo_edge)){
+        
+        printf("Error en formato de entrada linea p \n");
+        DestruccionDelGrafo(g);
+        return false;
+    }
+
 
     printf("%lu vertices y %lu Lados\n", nver, mlado);
 
@@ -176,20 +182,18 @@ void run_parser(Grafo g){
         //printf("firstchar: %c \n",firstchar);
         // estas al final de archivo o Error de lectura
         if (check_scan == EOF){
-            printf("liberar memoria, retornar NULL 1\n");
-            exit(EXIT_FAILURE);
+            printf("Warning: Debia leer %lu lados, leyo solo %lu\n",
+                    mlado, count_m);
+            DestruccionDelGrafo(g);
+            return false;
+            
         }
         // la linea cumple el formato: e v w 
         else if (firstchar == 'e' && fscanf(file,"%lu %lu", &vA, &vB) > 0){
-            // ...
-            // ... code here
-            // ...
             // retorna puntero al vertice creado o encontrado
-            //printf("pre buscarVertice \n");
             Vertice verticeA = buscarVertice(g, vA);
             Vertice verticeB = buscarVertice(g, vB);
             //agregar vertice como vecino de otro y viceversa.
-            //printf("pre emparejamiento \n");
             emparejarVertices(verticeA, verticeB);
             if(verticeA->gradov > g->delta){
                 g->delta = verticeA->gradov;
@@ -197,25 +201,19 @@ void run_parser(Grafo g){
             if(verticeB->gradov > g->delta){
                 g->delta = verticeB->gradov;
             }
-
-            // chequear el nuevo grado del grafo
-
-            //printf("%lu %lu\n", vA, vB);
             count_m++;
-            //g->mlados++;
-            //printf("lado: %lu\n",count_m);
         }
-        // la linea no lo cumple 
+        // la linea no lo cumple el formato
         else{
-            printf("liberar memoria, retornar NULL 2\n");
+            printf("ERROR: Linea no cumple el formato (e v1 v2)"
+            "en el lado %lu\n", count_m);
             DestruccionDelGrafo(g);
-            exit(EXIT_FAILURE);
+            return false;
         }
     }
     
     // Orden Natural
     printf("Orden natural \n");
     qsort(g->vertices, g->nver, sizeof(Vertice), cmpfunc);
-
-    //if (g->mlados < m){}
+    return true;
 }
