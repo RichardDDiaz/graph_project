@@ -34,6 +34,7 @@ Vertice buscarVertice(Grafo g, u32 nombreVertice){
     u32 key_hash = nombreVertice % g->nver;
 
     if (g->vertices[key_hash] == NULL){
+        //printf("hash == NULL\n");
         //crear el vertice
         g->vertices[key_hash] = crearDefaultVertice(nombreVertice);
         return g->vertices[key_hash];
@@ -41,12 +42,16 @@ Vertice buscarVertice(Grafo g, u32 nombreVertice){
     // al finalizar este ciclo o la funcion retorno el vertice
     // por que lo encontro o salio del ciclo porque 
     // encontro una celda vacia
+    //printf("pre while -> hash != NULL\n");
     while(g->vertices[key_hash] != NULL){
+        
         // Si ya existe el vertice
+        //printf("on while -> pre if;  key_hash: %lu;  nombreV: %lu\n", key_hash, g->vertices[key_hash]->nombrev);
         if(g->vertices[key_hash]->nombrev == nombreVertice){
             return g->vertices[key_hash];
         }
-        key_hash = (key_hash++) % g->nver;
+        key_hash = key_hash + 1;
+        key_hash = key_hash % g->nver;
     }
     // si salis del ciclo pero no de la funcion, significa que 
     // encontraste una celda vacia => no existe el vertice
@@ -54,7 +59,7 @@ Vertice buscarVertice(Grafo g, u32 nombreVertice){
     // uno de los lados era nombreVertice, entonces esta celda libre
     // que fue la primera que encontramos, deberia tener a nombreVertice
     g->vertices[key_hash] = crearDefaultVertice(nombreVertice);
-    
+    //printf("post while -> hash != NULL\n");
     return g->vertices[key_hash];
 }
 
@@ -62,20 +67,20 @@ Vertice buscarVertice(Grafo g, u32 nombreVertice){
 // Establece la vecindad entre dos vecinos
 void emparejarVertices(Vertice verticeA,Vertice verticeB){
     // Aumentamos el grado de los vertices
-    verticeA->gradov +=1;
-    verticeB->gradov +=1;
+    verticeA->gradov = verticeA->gradov + 1;
+    verticeB->gradov = verticeB->gradov + 1;
 
-    int gradoA = verticeA->gradov;
-    int gradoB = verticeB->gradov;
-
+    u32 gradoA = verticeA->gradov;
+    u32 gradoB = verticeB->gradov;
 
     // Reasignar el arreeglo de vecinos
-    verticeA->vecinos = realloc(verticeA->vecinos,gradoA);
-    verticeB->vecinos = realloc(verticeB->vecinos,gradoB);
+    verticeA->vecinos = realloc(verticeA->vecinos, sizeof(Vertice) * gradoA);
+    verticeB->vecinos = realloc(verticeB->vecinos, sizeof(Vertice) * gradoB);
 
     // Enlasamos los vecinos
     verticeA->vecinos[gradoA-1] = verticeB;
     verticeB->vecinos[gradoB-1] = verticeA;
+
 }
 
 
@@ -127,12 +132,14 @@ void run_parser(Grafo g){
     g->vertices = malloc(sizeof(Vertice) * nver);
     inicializarNullVertices(g);
     g->vertOrdNat = malloc(sizeof(Vertice) * nver);
+    g->delta = 0;
 
     // lectura de los lados con vertices
     // formato de cada linea: e v1 v2
     u32 vA, vB;
-    u32 count_m = 0;
+    u32 count_m = 0u;
     while(count_m <= mlado-1){
+        //printf("while\n");
         /*
             cuando hacemos fscanf(file,"%s %lu %lu",pseudo_edge , &nver, &mlado)
             el siguiente fscanf tomara el salto de linea de la linea j-1
@@ -142,6 +149,7 @@ void run_parser(Grafo g){
         */
         fscanf(file,"%c", &firstchar);
         u32 check_scan = fscanf(file,"%c", &firstchar);
+        //printf("firstchar: %c \n",firstchar);
         // estas al final de archivo o Error de lectura
         if (check_scan == EOF){
             printf("liberar memoria, retornar NULL 1\n");
@@ -153,34 +161,34 @@ void run_parser(Grafo g){
             // ... code here
             // ...
             // retorna puntero al vertice creado o encontrado
+            //printf("pre buscarVertice \n");
             Vertice verticeA = buscarVertice(g, vA);
             Vertice verticeB = buscarVertice(g, vB);
             //agregar vertice como vecino de otro y viceversa.
+            //printf("pre emparejamiento \n");
             emparejarVertices(verticeA, verticeB);
+            if(verticeA->gradov > g->delta){
+                g->delta = verticeA->gradov;
+            }
+            if(verticeB->gradov > g->delta){
+                g->delta = verticeB->gradov;
+            }
 
             // chequear el nuevo grado del grafo
 
             printf("%lu %lu\n", vA, vB);
             count_m++;
             //g->mlados++;
+            //printf("lado: %lu\n",count_m);
         }
         // la linea no lo cumple 
         else{
             printf("liberar memoria, retornar NULL 2\n");
-            exit(EXIT_FAILURE);
+            DestruccionDelGrafo(g);
+            //exit(EXIT_FAILURE);
         }
     }
+    printf("end while principal \n");
 
     //if (g->mlados < m)
 }
-/*
-c
-c
-c
-c
-p
-e
-e
-e
-e
-*/

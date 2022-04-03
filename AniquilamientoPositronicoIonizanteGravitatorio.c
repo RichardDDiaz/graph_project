@@ -23,3 +23,15 @@ Grafo ConstruccionDelGrafo()
 	run_parser(g);
 	return g;
 }
+
+
+void DestruccionDelGrafo(Grafo G){
+	free(G->vertices);
+	G->vertices = NULL;
+
+	free(G->vertOrdNat);
+	G->vertOrdNat = NULL;
+
+	free(G);
+	G = NULL;
+}

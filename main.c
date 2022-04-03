@@ -8,6 +8,7 @@
 
 #include "AniquilamientoPositronicoIonizanteGravitatorio.h"
 #include "EstructuraGrafo.h"
+//#include "parser.h"
 
 void main(){
     printf("Proyecto GRAFO iniciado");
@@ -18,9 +19,11 @@ void main(){
     printf("vertices: \n");
     for(u32 i = 0; i < g->nver; i++){
         printf("%lu: ", g->vertices[i]->nombrev);
-        for(u32 j=0; j < g->vertices[i]->gradov; j++){
+       /* for(u32 j=0; j < g->vertices[i]->gradov; j++){
             printf("%lu-", g->vertices[i]->vecinos[j]->nombrev);
-        }
+        }*/
+        
         printf("\n");
     }
+    printf("delta: %lu \n",g->delta);
 }

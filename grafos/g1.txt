@@ -1,6 +1,7 @@
 c lksjflksdjflk
 c sdlkfjlksf
-p edge 4 3
+p edge 6 4
 e 2 3
-e 3 4
+e 4 5
 e 2 5
+e 1 6
