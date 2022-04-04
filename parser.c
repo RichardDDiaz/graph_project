@@ -22,44 +22,41 @@ Vertice crearDefaultVertice(u32 nombreVertice){
     v->nombrev = nombreVertice;
     v->gradov = 0;
     v->colorv = UNASSIGNED_COLOR;
-    v->vecinos = NULL; // vecinos = mmalloc (size de Vertice * delta de v)
+    v->vecinos = NULL;
     return v;
 }
 
 
-// Busca/crea el vertice 
+// Busca/crea el vertice
 Vertice buscarVertice(Grafo g, u32 nombreVertice){
     /* Funcion hash: un simple u32 % nver */
     // [0,...,key_hash,...,nver-1]
     u32 key_hash = nombreVertice % g->nver;
 
     if (g->vertices[key_hash] == NULL){
-        //printf("hash == NULL\n");
         //crear el vertice
         g->vertices[key_hash] = crearDefaultVertice(nombreVertice);
+
         return g->vertices[key_hash];
     }
     // al finalizar este ciclo o la funcion retorno el vertice
-    // por que lo encontro o salio del ciclo porque 
+    // por que lo encontro o salio del ciclo porque
     // encontro una celda vacia
-    //printf("pre while -> hash != NULL\n");
     while(g->vertices[key_hash] != NULL){
-        
+
         // Si ya existe el vertice
-        //printf("on while -> pre if;  key_hash: %lu;  nombreV: %lu\n", key_hash, g->vertices[key_hash]->nombrev);
         if(g->vertices[key_hash]->nombrev == nombreVertice){
             return g->vertices[key_hash];
         }
         key_hash = key_hash + 1;
         key_hash = key_hash % g->nver;
     }
-    // si salis del ciclo pero no de la funcion, significa que 
+    // si salis del ciclo pero no de la funcion, significa que
     // encontraste una celda vacia => no existe el vertice
-    // nombreVertice, por que por ejemplo si en la interacion anterior 
+    // nombreVertice, por que por ejemplo si en la interacion anterior
     // uno de los lados era nombreVertice, entonces esta celda libre
     // que fue la primera que encontramos, deberia tener a nombreVertice
     g->vertices[key_hash] = crearDefaultVertice(nombreVertice);
-    //printf("post while -> hash != NULL\n");
     return g->vertices[key_hash];
 }
 
@@ -93,11 +90,20 @@ int cmpfunc (const void * a, const void * b) {
   if (al->nombrev < bl->nombrev){
     return -1;
   }
-  
+
   if (al->nombrev > bl->nombrev){
     return 1;
   }else{
     return 0;
+  }
+}
+
+
+
+// Copia de vertices a vertOrdNat
+void copiaVertOrdNat(Grafo G){
+  for(u32 i=0;i<G->nver; i++ ){
+    G->vertOrdNat[i] = G->vertices[i];
   }
 }
 
@@ -126,13 +132,13 @@ bool run_parser(Grafo g){
         return false;
     }
     printf("Archivo Abierto\n");
-    
+
     // leer  el primer caracter del archivo
     char firstchar;
     nscanf = fscanf(file,"%c", &firstchar);
     if(nscanf < 1){DestruccionDelGrafo(g); return false;}
-    
-    /* recorre los comentarios cuando el primer caracter es 'c' 
+
+    /* recorre los comentarios cuando el primer caracter es 'c'
        cuando el primer caracter sea != de 'c', en teoria ya estamos
        en la parte de lectura de los lados */
     while(!feof(file) && firstchar == 'c'){
@@ -149,10 +155,10 @@ bool run_parser(Grafo g){
     u32 mlado;
     char pseudo_edge[5]; // +1 por caracter de terminación
     // si el primer caracter es EOF, no hay mas datos
-    if (firstchar != 'p' || 
+    if (firstchar != 'p' ||
         fscanf(file,"%s %lu %lu",pseudo_edge , &nver, &mlado) <= 0 ||
         strcmp("edge",pseudo_edge)){
-        
+
         printf("Error en formato de entrada linea p \n");
         DestruccionDelGrafo(g);
         return false;
@@ -173,27 +179,25 @@ bool run_parser(Grafo g){
     u32 vA, vB;
     u32 count_m = 0u;
     while(count_m <= mlado-1){
-        //printf("while\n");
         /*
             cuando hacemos fscanf(file,"%s %lu %lu",pseudo_edge , &nver, &mlado)
             el siguiente fscanf tomara el salto de linea de la linea j-1
             y el siguiente fscanf sera el primer char de la linea j.
-            no se como hacer para que lo ignore sin hacer que lo asigne a una 
+            no se como hacer para que lo ignore sin hacer que lo asigne a una
             variable que no usaremos(lo probe con la var u32 vA y tampoco)
         */
         nscanf = fscanf(file,"%c", &firstchar);
         if(nscanf < 1){DestruccionDelGrafo(g); return false;}
         int check_scan = fscanf(file,"%c", &firstchar);
-        //printf("firstchar: %c \n",firstchar);
         // estas al final de archivo o Error de lectura
         if (check_scan == EOF){
             printf("Warning: Debia leer %lu lados, leyo solo %lu\n",
                     mlado, count_m);
             DestruccionDelGrafo(g);
             return false;
-            
+
         }
-        // la linea cumple el formato: e v w 
+        // la linea cumple el formato: e v w
         else if (firstchar == 'e' && fscanf(file,"%lu %lu", &vA, &vB) > 0){
             // retorna puntero al vertice creado o encontrado
             Vertice verticeA = buscarVertice(g, vA);
@@ -216,9 +220,11 @@ bool run_parser(Grafo g){
             return false;
         }
     }
-    
+
     // Orden Natural
-    printf("Orden natural \n");
     qsort(g->vertices, g->nver, sizeof(Vertice), cmpfunc);
+
+    copiaVertOrdNat(g);
+
     return true;
 }

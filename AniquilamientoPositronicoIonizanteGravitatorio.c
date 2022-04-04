@@ -4,7 +4,7 @@
 #include "AniquilamientoPositronicoIonizanteGravitatorio.h"
 #include "parser.h"
 
-#define ErrorGrafo 4294967295 
+#define ErrorGrafo 4294967295
 
 Grafo ConstruccionDelGrafo()
 {
@@ -20,24 +20,11 @@ Grafo ConstruccionDelGrafo()
 	g->ccolor = 0;
 	g->delta  = 0;
 	g->vertices = NULL;
-    g->vertOrdNat = NULL;
+  g->vertOrdNat = NULL;
 
 	run_parser(g);
 	return g;
 }
-
-/*
-void DestruccionDelGrafo(Grafo G){
-	free(G->vertices);
-	G->vertices = NULL;
-
-	free(G->vertOrdNat);
-	G->vertOrdNat = NULL;
-
-	free(G);
-	G = NULL;
-}
-*/
 
 void DestruccionDelGrafo(Grafo G){
 	// vaciar los arreglos de punteros de cada vecino de cada vertice
@@ -50,10 +37,19 @@ void DestruccionDelGrafo(Grafo G){
 	}
 	// eliminar cada vertice del arreglo de punteros de vertices
 	for(u32 l=0 ; l<G->nver; l++){
-		
+
 		free(G->vertices[l]);
 		G->vertices[l] = NULL;
 	}
+
+	// eliminar cada vertice del arreglo de punteros de vertices de orden natural
+	for(u32 l=0 ; l<G->nver; l++){
+		//free(G->vertOrdNat[l]);
+		G->vertOrdNat[l] = NULL;
+	}
+	free(G->vertOrdNat);
+	G->vertOrdNat = NULL;
+	
 	free(G->vertices);
   	G->vertices = NULL;
   	free(G);
