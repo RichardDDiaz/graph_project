@@ -32,7 +32,10 @@ int main(){
         printf("indice %lu - nombre: %lu \n", i,g->vertOrdNat[i]->nombrev);
     }
 */
-
+    printf("== Numero Vertices: %lu ==\n", g->nver);
+    printf("== Numero Lados: %lu ==\n", g->mlados);
+    printf("== Delta: %lu ==\n", g->delta);
+    
     if (g != NULL){
         DestruccionDelGrafo(g);
         return 0;

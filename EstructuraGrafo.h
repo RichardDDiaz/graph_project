@@ -15,16 +15,6 @@ struct _VerticeSt
 
 typedef struct _VerticeSt * Vertice;
 
-/*
-Por que teniamos aristas?
-struct _AristaSt
-{
-	Vertice  extremo1;
-	Vertice  extremo2;
-};
-
-typedef struct _AristaSt * Arista;
-*/
 
 typedef struct _GrafoSt
 {

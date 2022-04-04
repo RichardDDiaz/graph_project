@@ -7,6 +7,11 @@ gcc -Wall -Wextra -O3 -std=c99 main.c AniquilamientoPositronicoIonizanteGravitat
 echo "./grafos/NOMBRE_GRAFO" | ./main  
 ```
 
+## How to Compile with valgrind:
+```
+echo "./grafos/queen10" | valgrind --leak-check=yes ./main  
+```
+
 ## Additional Information  
 Funcion Hash: [Wikipedia](https://es.wikipedia.org/wiki/Función_hash)  
 Planing Parser: [Google Docs](https://docs.google.com/document/d/1_L6cPoFbx5PfRuLD23szDaUpEIGImv00HcsL0ytJxYc/edit)  

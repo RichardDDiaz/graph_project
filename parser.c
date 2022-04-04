@@ -129,6 +129,7 @@ bool run_parser(Grafo g){
     if (file == NULL){
         printf("Error al abrir archivo");
         DestruccionDelGrafo(g);
+        fclose(file);
         return false;
     }
     printf("Archivo Abierto\n");
@@ -136,7 +137,7 @@ bool run_parser(Grafo g){
     // leer  el primer caracter del archivo
     char firstchar;
     nscanf = fscanf(file,"%c", &firstchar);
-    if(nscanf < 1){DestruccionDelGrafo(g); return false;}
+    if(nscanf < 1){DestruccionDelGrafo(g); fclose(file); return false;}
 
     /* recorre los comentarios cuando el primer caracter es 'c'
        cuando el primer caracter sea != de 'c', en teoria ya estamos
@@ -144,11 +145,11 @@ bool run_parser(Grafo g){
     while(!feof(file) && firstchar == 'c'){
         while(firstchar != EOF && firstchar != '\n'){
             nscanf = fscanf(file,"%c", &firstchar);
-            if(nscanf < 1){DestruccionDelGrafo(g); return false;}
+            if(nscanf < 1){DestruccionDelGrafo(g); fclose(file); return false;}
         }
         // te paras en el siguiente primer caracter
         nscanf=  fscanf(file,"%c", &firstchar);
-        if(nscanf < 1){DestruccionDelGrafo(g); return false;}
+        if(nscanf < 1){DestruccionDelGrafo(g); fclose(file); return false;}
     }
 
     u32 nver;
@@ -161,6 +162,7 @@ bool run_parser(Grafo g){
 
         printf("Error en formato de entrada linea p \n");
         DestruccionDelGrafo(g);
+        fclose(file);
         return false;
     }
 
@@ -194,6 +196,7 @@ bool run_parser(Grafo g){
             printf("Warning: Debia leer %lu lados, leyo solo %lu\n",
                     mlado, count_m);
             DestruccionDelGrafo(g);
+            fclose(file);
             return false;
 
         }
@@ -217,6 +220,7 @@ bool run_parser(Grafo g){
             printf("ERROR: Linea no cumple el formato (e v1 v2)"
             "en el lado %lu\n", count_m);
             DestruccionDelGrafo(g);
+            fclose(file);
             return false;
         }
     }
@@ -226,5 +230,6 @@ bool run_parser(Grafo g){
 
     copiaVertOrdNat(g);
 
+    fclose(file);
     return true;
 }
