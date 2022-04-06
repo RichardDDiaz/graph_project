@@ -13,35 +13,18 @@
 int main(){
     printf("Proyecto GRAFO iniciado");
     Grafo g = ConstruccionDelGrafo();
-    //assert(g != NULL && "Grafo es Null");
-    printf("\n Construccion del grafo: Finalizada \n");
+    if(g!=NULL){
+        printf("== fun Numero Vertices: %lu ==\n", NumeroDeVertices(g));
+        printf("== fun Numero Lados: %lu ==\n", NumeroDeLados(g));
+        printf("== fun Delta: %lu ==\n", Delta(g));
 
-/*
-    printf("vertices: \n");
-    for(u32 i = 0; i < g->nver; i++){
-        printf("indice %lu - nombre: %lu \n", i,g->vertices[i]->nombrev);
-        for(u32 j=0; j < g->vertices[i]->gradov; j++){
-            printf("%lu-", g->vertices[i]->vecinos[j]->nombrev);
-        }
-
-        printf("\n");
-
-    }
-    printf("\n \n vertOrdNat: \n");
-    for(u32 i = 0; i < g->nver; i++){
-        printf("indice %lu - nombre: %lu \n", i,g->vertOrdNat[i]->nombrev);
-    }
-*/
-    printf("== Numero Vertices: %lu ==\n", g->nver);
-    printf("== Numero Lados: %lu ==\n", g->mlados);
-    printf("== Delta: %lu ==\n", g->delta);
-    
-    if (g != NULL){
         DestruccionDelGrafo(g);
         return 0;
+        
     }
-
-    //printf("delta: %lu \n",g->delta);
-
-    return 0;
+    else{
+        printf("\n No se pudo construir el grafo. \n");
+        return 0;
+    }
+    
 }
