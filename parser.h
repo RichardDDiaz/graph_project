@@ -1,21 +1,30 @@
 #ifndef _PARSER_H
 #define _PARSER_H
 #include <stdbool.h>
-#include "AniquilamientoPositronicoIonizanteGravitatorio.h"
+#include "EstructuraGrafo.h"
 
+#include "AniquilamientoPositronicoIonizanteGravitatorio.h"
 
 // funcion hash
 int hash(char *str);
 
-// cambiar los tipos de datos pero buscar el vertice  y retornar
-// el vertice o null
-bool buscar_vertice(int v, int *vertices);
+// Busca/crea si no existe el vertice
+// return: puntero al vertice.
+Vertice buscar_vertice(Grafo g, u32 nombreVertice);
 
-// poner el vertice1 como vecino del vertice2 y viceversa
-void emparejar_vertices(int vOne, int vTwo);
+// Establece al vertice1 como vecino del vertice2 y viceversa
+void emparejarVertices(Vertice verticeA,Vertice verticeB);
 
-// cambiar los tipos de datos de entrada y salida 
-// construccion del grafo
-void run_parser(int grafo)
+
+// Iniciamos todos los espacios de memoria en NULL
+void inicializarNullVertices(Grafo g);
+
+// cambiar los tipos de datos de entrada y salida
+// Construccion del grafo
+
+// Copia de vertices a vertOrdNat
+void copiaVertOrdNat(Grafo G);
+
+bool run_parser(Grafo grafo);
 
 #endif //_PARSER_H
