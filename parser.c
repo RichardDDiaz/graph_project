@@ -6,8 +6,6 @@
 
 
 #define UNASSIGNED_COLOR 4294967295
-#define ERROR 4294967295
-
 
 //Iniciamos todos los espacios de memoria en NULL
 void inicializarNullVertices(Grafo g){
@@ -115,59 +113,71 @@ pasado por consola.
 */
 bool run_parser(Grafo g){
     char path_name[100];
-    int nscanf = 0;
-    printf("\n Indique ruta del archivo: \n");
-    int scan_path_name = scanf("%s", path_name);
-    printf("filename: %s\n", path_name);
-    if (scan_path_name <= 0){
-        printf("Error al leer ruta del archivo");
+    //char * nscanf = NULL;
+    if (fgets(path_name, 100, stdin) == NULL){
+        puts("Error al leer ruta del archivo");
         DestruccionDelGrafo(g);
         return false;
+    } 
+    else{
+        puts("\n");
+        puts(path_name);
     }
-
-    FILE *file = fopen(path_name, "r");
+    FILE *file = fopen(strtok(path_name, "\n"), "r");
     if (file == NULL){
-        printf("Error al abrir archivo");
+        puts("Error al abrir archivo");
         DestruccionDelGrafo(g);
-        fclose(file);
+        //fclose(file);
         return false;
     }
-    printf("Archivo Abierto\n");
+    puts("Archivo Abierto\n");
+    int firstchar;
+    firstchar = fgetc(file);
 
-    // leer  el primer caracter del archivo
-    char firstchar;
-    nscanf = fscanf(file,"%c", &firstchar);
-    if(nscanf < 1){DestruccionDelGrafo(g); fclose(file); return false;}
+    if(firstchar == EOF){DestruccionDelGrafo(g); fclose(file); return false;}
 
     /* recorre los comentarios cuando el primer caracter es 'c'
        cuando el primer caracter sea != de 'c', en teoria ya estamos
        en la parte de lectura de los lados */
     while(!feof(file) && firstchar == 'c'){
         while(firstchar != EOF && firstchar != '\n'){
-            nscanf = fscanf(file,"%c", &firstchar);
-            if(nscanf < 1){DestruccionDelGrafo(g); fclose(file); return false;}
+            firstchar = fgetc(file);
+            if(firstchar == EOF){DestruccionDelGrafo(g); fclose(file); return false;}
         }
         // te paras en el siguiente primer caracter
-        nscanf=  fscanf(file,"%c", &firstchar);
-        if(nscanf < 1){DestruccionDelGrafo(g); fclose(file); return false;}
+        firstchar = fgetc(file);
+        if(firstchar == EOF){DestruccionDelGrafo(g); fclose(file); return false;}
     }
 
     u32 nver;
     u32 mlado;
-    char pseudo_edge[5]; // +1 por caracter de terminación
-    // si el primer caracter es EOF, no hay mas datos
-    if (firstchar != 'p' ||
-        fscanf(file,"%s %lu %lu",pseudo_edge , &nver, &mlado) <= 0 ||
-        strcmp("edge",pseudo_edge)){
+    char * edge = NULL;
+    char linea[80];
 
-        printf("Error en formato de entrada linea p \n");
+        //char pseudo_edge[5]; // +1 por caracter de terminación
+    // si el primer caracter es EOF, no hay mas datos
+    // fscanf(file,"%s %lu %lu",pseudo_edge , &nver, &mlado) 
+    // fgets(pseudo_edge, 5, file);
+
+    if (firstchar != 'p' || fgets(linea, 80, file) == NULL){
+        puts("Error en formato de entrada linea p \n");
         DestruccionDelGrafo(g);
         fclose(file);
         return false;
     }
 
+    // se puede chequear si alguno tiene null, pero no si lo que tiene es 
+    //correcto
+    edge = strtok(linea, " ");
+    if(strcmp("edge", edge) != 0){
+        DestruccionDelGrafo(g);
+        fclose(file);
+        return false;
+    }
+    nver = strtoul(strtok(NULL, " "), NULL, 10);
+    mlado = strtoul(strtok(NULL, " "), NULL, 10);
 
-    printf("%lu vertices y %lu Lados\n", nver, mlado);
+    
 
     g->nver = nver;
     g->mlados = mlado;
@@ -176,33 +186,27 @@ bool run_parser(Grafo g){
     g->vertOrdNat = malloc(sizeof(Vertice) * nver);
     g->delta = 0;
 
-    // lectura de los lados con vertices
-    // formato de cada linea: e v1 v2
+
     u32 vA, vB;
     u32 count_m = 0u;
+    //printear firstchar
+    //firstchar = fgetc(file);
+    //printf("firstchar: %c\n", firstchar);
     while(count_m <= mlado-1){
-        /*
-            cuando hacemos fscanf(file,"%s %lu %lu",pseudo_edge , &nver, &mlado)
-            el siguiente fscanf tomara el salto de linea de la linea j-1
-            y el siguiente fscanf sera el primer char de la linea j.
-            no se como hacer para que lo ignore sin hacer que lo asigne a una
-            variable que no usaremos(lo probe con la var u32 vA y tampoco)
-        */
-        nscanf = fscanf(file,"%c", &firstchar);
-        if(nscanf < 1){DestruccionDelGrafo(g); return false;}
-        int check_scan = fscanf(file,"%c", &firstchar);
-        // estas al final de archivo o Error de lectura
-        if (check_scan == EOF){
-            printf("Warning: Debia leer %lu lados, leyo solo %lu\n",
-                    mlado, count_m);
+        firstchar = fgetc(file);
+
+        // caso donde no puede leer el archivo, por error o por que no hay mas
+        if (firstchar == EOF){
             DestruccionDelGrafo(g);
             fclose(file);
             return false;
-
         }
-        // la linea cumple el formato: e v w
-        else if (firstchar == 'e' && fscanf(file,"%lu %lu", &vA, &vB) > 0){
-            // retorna puntero al vertice creado o encontrado
+        // caso donde si son numeros y debemos empezar a cargar los vertices
+        else if (firstchar == 'e' && fgets(linea, 80, file) != NULL){
+            vA = strtoul(strtok(linea, " "), NULL, 10);
+            vB = strtoul(strtok(NULL, " "), NULL, 10);            
+            //printf("vA: %lu, vB: %lu\n", vA, vB);
+
             Vertice verticeA = buscarVertice(g, vA);
             Vertice verticeB = buscarVertice(g, vB);
             //agregar vertice como vecino de otro y viceversa.
@@ -217,15 +221,14 @@ bool run_parser(Grafo g){
         }
         // la linea no lo cumple el formato
         else{
-            printf("ERROR: Linea no cumple el formato (e v1 v2)"
-            "en el lado %lu\n", count_m);
+            puts(strcat("Error en formato de entrada linea e:\n ", linea));
             DestruccionDelGrafo(g);
             fclose(file);
             return false;
         }
+        
     }
 
-    // Orden Natural
     qsort(g->vertices, g->nver, sizeof(Vertice), cmpfunc);
 
     copiaVertOrdNat(g);
