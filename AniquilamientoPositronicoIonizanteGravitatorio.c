@@ -58,7 +58,7 @@ void DestruccionDelGrafo(Grafo G){
   	G = NULL;
 }
 
-/*
+
 u32 NumeroDeVertices(Grafo G){
   return G->nver;
 }
@@ -74,7 +74,7 @@ u32 Delta(Grafo G){
 }
 
 u32 Nombre(u32 i,Grafo G){
-  return G->vertOrdNat[i]->nombrev;
+  return G->vertices[i]->ordNatVertice->nombrev;
 }
 
 
@@ -83,17 +83,14 @@ u32 Grado(u32 i,Grafo G){
   		return ErrorGrafo;
   	}
   	else{
-  		return G->vertOrdNat[i]->gradov;
+  		return G->vertices[i]->vertice->gradov;
   	}
 }
 
+
 u32 IndiceONVecino(u32 j,u32 k,Grafo G){
-	if (k < NumeroDeVertices(G) && G->vertOrdNat[k]->gradov > j &&
-		G->vertOrdNat[k]->vecinos[j]->nombrev == G->vertOrdNat[j]->nombrev){
-			printf("IndiceONVecino if\n");
-			return j;
+	if (k < NumeroDeVertices(G) && G->vertices[k]->ordNatVertice->gradov > j){
+		return G->vertices[k]->ordNatVertice->vecinos[j]->positionOrdNat;
 	}
-	printf("IndiceONVecino else\n");
 	return ErrorGrafo;
 }
-*/

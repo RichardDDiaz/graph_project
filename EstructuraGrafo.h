@@ -11,6 +11,7 @@ struct _VerticeSt
 	u32 nombrev; // nombre del vertice
 	u32 colorv; // color del vertice
 	u32 gradov; // grado del vertice
+	u32 positionOrdNat; // posicion natural del vertice si esta ordenado
   struct _VerticeSt ** vecinos; //arreglo de punteros de los vecinos
 };
 

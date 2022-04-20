@@ -229,9 +229,9 @@ bool run_parser(Grafo g){
         
     }
 
+    // ordenar de forma natural
     qsort(g->prevertices, g->nver, sizeof(Vertice), cmpfunc);
 
-    //copiaVertOrdNat(g);
     /*-------------------------------------------------------*/
     // crear un arreglo de punteros a PosVertice de longitud nver
     // inicializar con NULL
@@ -247,6 +247,7 @@ bool run_parser(Grafo g){
         p->vertice = g->prevertices[i];
         p->ordNatVertice = g->prevertices[i];
         g->vertices[i] = p;
+        g->vertices[i]->ordNatVertice->positionOrdNat = i;
         g->prevertices[i] = NULL;
     }
     free(g->prevertices);
