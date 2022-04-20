@@ -5,6 +5,7 @@
 
 typedef unsigned long int u32;
 
+
 struct _VerticeSt
 {
 	u32 nombrev; // nombre del vertice
@@ -15,6 +16,23 @@ struct _VerticeSt
 
 typedef struct _VerticeSt * Vertice;
 
+/* vertice: apunta a un vertice, este puntero sera el que se tiene que 
+ *		intercambiar cuando quieras ordenar con alguna de las funciones
+ *		de ordenamiento a implementar
+ * ordNatVertice: apunta a un vertice cual es el que deberia estar en
+ * 		 esta posicion si se lo busca por orden natural.
+ *       Cuando intercambies dos vertices (osea el puntero vertice),
+ * 		 deberas fijarte en mantener a el puntero de ordNatVertice que 
+ * 		 siga apuntando al vertice correspondiente.
+*/
+struct _PosVerticeSt
+{
+	Vertice vertice;
+	Vertice ordNatVertice;
+};
+
+typedef struct _PosVerticeSt * PosVertice;
+
 
 typedef struct _GrafoSt
 {
@@ -22,11 +40,13 @@ typedef struct _GrafoSt
 	u32 mlados; // cantidad de lados
 	u32 ccolor; // cantidad de colores
 	u32 delta; // grado maximo del grafo
+	
+	// arreglo de punteros a PosVertice
+	PosVertice * vertices;
 
-	Vertice * vertices; // Arreglo de punteros de VerticeSt
-	Vertice * vertOrdNat; // Arreglo de punteros de VerticeSt Orden Natural
 
-	//Arista * aristaArr; // Arreglo con punteros a estructuras AristaSt
+	Vertice * prevertices; // Arreglo de punteros de VerticeSt -> luego NULL
+	//Vertice * vertOrdNat; // Arreglo de punteros de VerticeSt Orden Natural
 } GrafoSt;
 
 #endif //_ESTRUCTURAGRAFO_H

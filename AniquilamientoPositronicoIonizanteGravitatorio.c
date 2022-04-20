@@ -19,8 +19,9 @@ Grafo ConstruccionDelGrafo()
 	g->mlados = 0 ;
 	g->ccolor = 0;
 	g->delta  = 0;
+	g->prevertices = NULL;
 	g->vertices = NULL;
-    g->vertOrdNat = NULL;
+    //g->vertOrdNat = NULL;
     bool construccionExitosa = run_parser(g);
 	if(construccionExitosa){
 		return g;
@@ -32,36 +33,32 @@ Grafo ConstruccionDelGrafo()
 }
 
 void DestruccionDelGrafo(Grafo G){
+	// vacias PosVertices con nombre vertices
+		//TAREA
+
+
 	// vaciar los arreglos de punteros de cada vecino de cada vertice
 	for(u32 j=0 ; j < G->nver; j++){
-		for(u32 k=0 ; k<G->vertices[j]->gradov; k++){
-      		G->vertices[j]->vecinos[k] = NULL;
+		for(u32 k=0 ; k<G->prevertices[j]->gradov; k++){
+      		G->prevertices[j]->vecinos[k] = NULL;
     	}
-    	free(G->vertices[j]->vecinos);
-		G->vertices[j]->vecinos = NULL;
+    	free(G->prevertices[j]->vecinos);
+		G->prevertices[j]->vecinos = NULL;
 	}
 	// eliminar cada vertice del arreglo de punteros de vertices
 	for(u32 l=0 ; l<G->nver; l++){
 
-		free(G->vertices[l]);
-		G->vertices[l] = NULL;
+		free(G->prevertices[l]);
+		G->prevertices[l] = NULL;
 	}
-
-	// eliminar cada vertice del arreglo de punteros de vertices de orden natural
-	for(u32 l=0 ; l<G->nver; l++){
-		//free(G->vertOrdNat[l]);
-		G->vertOrdNat[l] = NULL;
-	}
-	free(G->vertOrdNat);
-	G->vertOrdNat = NULL;
 	
-	free(G->vertices);
-  	G->vertices = NULL;
+	free(G->prevertices);
+  	G->prevertices = NULL;
   	free(G);
   	G = NULL;
 }
 
-
+/*
 u32 NumeroDeVertices(Grafo G){
   return G->nver;
 }
@@ -99,3 +96,4 @@ u32 IndiceONVecino(u32 j,u32 k,Grafo G){
 	printf("IndiceONVecino else\n");
 	return ErrorGrafo;
 }
+*/

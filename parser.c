@@ -10,7 +10,7 @@
 //Iniciamos todos los espacios de memoria en NULL
 void inicializarNullVertices(Grafo g){
     for(u32 i = 0; i < g->nver; i++){
-        g->vertices[i] = NULL;
+        g->prevertices[i] = NULL;
     }
 }
 
@@ -31,20 +31,20 @@ Vertice buscarVertice(Grafo g, u32 nombreVertice){
     // [0,...,key_hash,...,nver-1]
     u32 key_hash = nombreVertice % g->nver;
 
-    if (g->vertices[key_hash] == NULL){
+    if (g->prevertices[key_hash] == NULL){
         //crear el vertice
-        g->vertices[key_hash] = crearDefaultVertice(nombreVertice);
+        g->prevertices[key_hash] = crearDefaultVertice(nombreVertice);
 
-        return g->vertices[key_hash];
+        return g->prevertices[key_hash];
     }
     // al finalizar este ciclo o la funcion retorno el vertice
     // por que lo encontro o salio del ciclo porque
     // encontro una celda vacia
-    while(g->vertices[key_hash] != NULL){
+    while(g->prevertices[key_hash] != NULL){
 
         // Si ya existe el vertice
-        if(g->vertices[key_hash]->nombrev == nombreVertice){
-            return g->vertices[key_hash];
+        if(g->prevertices[key_hash]->nombrev == nombreVertice){
+            return g->prevertices[key_hash];
         }
         key_hash = key_hash + 1;
         key_hash = key_hash % g->nver;
@@ -54,8 +54,8 @@ Vertice buscarVertice(Grafo g, u32 nombreVertice){
     // nombreVertice, por que por ejemplo si en la interacion anterior
     // uno de los lados era nombreVertice, entonces esta celda libre
     // que fue la primera que encontramos, deberia tener a nombreVertice
-    g->vertices[key_hash] = crearDefaultVertice(nombreVertice);
-    return g->vertices[key_hash];
+    g->prevertices[key_hash] = crearDefaultVertice(nombreVertice);
+    return g->prevertices[key_hash];
 }
 
 
@@ -99,11 +99,11 @@ int cmpfunc (const void * a, const void * b) {
 
 
 // Copia de vertices a vertOrdNat
-void copiaVertOrdNat(Grafo G){
-  for(u32 i=0;i<G->nver; i++ ){
-    G->vertOrdNat[i] = G->vertices[i];
-  }
-}
+//void copiaVertOrdNat(Grafo G){
+//  for(u32 i=0;i<G->nver; i++ ){
+//    G->vertOrdNat[i] = G->vertices[i];
+//  }
+//}
 
 
 
@@ -181,9 +181,9 @@ bool run_parser(Grafo g){
 
     g->nver = nver;
     g->mlados = mlado;
-    g->vertices = malloc(sizeof(Vertice) * nver);
+    g->prevertices = malloc(sizeof(Vertice) * nver);
     inicializarNullVertices(g);
-    g->vertOrdNat = malloc(sizeof(Vertice) * nver);
+    //g->vertOrdNat = malloc(sizeof(Vertice) * nver);
     g->delta = 0;
 
 
@@ -229,9 +229,28 @@ bool run_parser(Grafo g){
         
     }
 
-    qsort(g->vertices, g->nver, sizeof(Vertice), cmpfunc);
+    qsort(g->prevertices, g->nver, sizeof(Vertice), cmpfunc);
 
-    copiaVertOrdNat(g);
+    //copiaVertOrdNat(g);
+    /*-------------------------------------------------------*/
+    // crear un arreglo de punteros a PosVertice de longitud nver
+    // inicializar con NULL
+    g->vertices = malloc(sizeof(PosVertice) * g->nver);
+    for(u32 i=0; i<g->nver; i++){
+        g->vertices[i] = NULL;
+    }
+    // para cada vertice en el arreglo g->prevertices, crear una estructura
+    // PosVertice p y asignar a p->vertice el vertice de g->prevertices
+    // y p->ordNatVertice el vertice en g->prevertices
+    for(u32 i=0; i<g->nver; i++){
+        PosVertice p = malloc(sizeof(struct _PosVerticeSt));
+        p->vertice = g->prevertices[i];
+        p->ordNatVertice = g->prevertices[i];
+        g->vertices[i] = p;
+        g->prevertices[i] = NULL;
+    }
+    free(g->prevertices);
+    g->prevertices = NULL;
 
     fclose(file);
     return true;
