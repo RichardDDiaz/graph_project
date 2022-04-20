@@ -24,10 +24,11 @@ int main(){
 
 
         //recorrer todos los vertices en un for
-        //for(u32 i=0; i<g->nver; i++){
+        for(u32 i=0; i<g->nver; i++){
             //printf(" %p == %p \n", g->vertices[i]->ordNatVertice, g->vertices[i]->vertice);
             //printf("== Vertice: %lu ==\n", g->vertices[i]->ordNatVertice->nombrev);
-        //}
+            printf("== V: %lu, OrdV: %lu ==\n", g->vertices[i]->vertice->nombrev, g->vertices[i]->ordNatVertice->nombrev);
+        }
             
 
         DestruccionDelGrafo(g);
