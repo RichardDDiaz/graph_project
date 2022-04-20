@@ -24,13 +24,13 @@ int main(){
 
 
         //recorrer todos los vertices en un for
-        for(u32 i=0; i<g->nver; i++){
-            printf(" %p == %p \n", g->vertices[i]->ordNatVertice, g->vertices[i]->vertice);
+        //for(u32 i=0; i<g->nver; i++){
+            //printf(" %p == %p \n", g->vertices[i]->ordNatVertice, g->vertices[i]->vertice);
             //printf("== Vertice: %lu ==\n", g->vertices[i]->ordNatVertice->nombrev);
-        }
+        //}
             
 
-        //DestruccionDelGrafo(g);
+        DestruccionDelGrafo(g);
         return 0;
         
     }

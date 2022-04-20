@@ -33,27 +33,27 @@ Grafo ConstruccionDelGrafo()
 }
 
 void DestruccionDelGrafo(Grafo G){
-	// vacias PosVertices con nombre vertices
-		//TAREA
-
-
 	// vaciar los arreglos de punteros de cada vecino de cada vertice
 	for(u32 j=0 ; j < G->nver; j++){
-		for(u32 k=0 ; k<G->prevertices[j]->gradov; k++){
-      		G->prevertices[j]->vecinos[k] = NULL;
+		for(u32 k=0 ; k<G->vertices[j]->vertice->gradov; k++){
+      		G->vertices[j]->vertice->vecinos[k] = NULL;
     	}
-    	free(G->prevertices[j]->vecinos);
-		G->prevertices[j]->vecinos = NULL;
+    	free(G->vertices[j]->vertice->vecinos);
+		G->vertices[j]->vertice->vecinos = NULL;
 	}
-	// eliminar cada vertice del arreglo de punteros de vertices
+	// eliminar cada vertice de la estructura
 	for(u32 l=0 ; l<G->nver; l++){
-
-		free(G->prevertices[l]);
-		G->prevertices[l] = NULL;
+		G->vertices[l]->ordNatVertice = NULL;
+		free(G->vertices[l]->vertice);
+		G->vertices[l]->vertice = NULL;
+		free(G->vertices[l]);
+		G->vertices[l] = NULL;
 	}
-	
-	free(G->prevertices);
-  	G->prevertices = NULL;
+
+	free(G->vertices);
+  	G->vertices = NULL;
+	// deberia quedarse en NULL desde el parser
+	G->prevertices = NULL;
   	free(G);
   	G = NULL;
 }
