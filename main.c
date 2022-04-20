@@ -30,6 +30,11 @@ int main(){
             printf("== V: %lu, OrdV: %lu ==\n", g->vertices[i]->vertice->nombrev, g->vertices[i]->ordNatVertice->nombrev);
         }
             
+        printf("indice k: %lu, vertice: %lu\n",4lu, Nombre(4,g));
+        printf("vecinoIndice j: %lu, vecino: %lu\n", 0lu, IndiceONVecino(0,4,g));
+        printf("vecinoIndice j: %lu, vecino: %lu\n", 1lu, IndiceONVecino(1,4,g));
+        printf("vecinoIndice j: %lu, vecino: %lu\n", 2lu, IndiceONVecino(2,4,g));
+
 
         DestruccionDelGrafo(g);
         return 0;
