@@ -9,7 +9,6 @@ typedef unsigned long int u32;
 struct _VerticeSt
 {
 	u32 nombrev; // nombre del vertice
-	u32 colorv; // color del vertice
 	u32 gradov; // grado del vertice
 	u32 positionOrdNat; // posicion natural del vertice si esta ordenado
   struct _VerticeSt ** vecinos; //arreglo de punteros de los vecinos
@@ -26,28 +25,26 @@ typedef struct _VerticeSt * Vertice;
  * 		 deberas fijarte en mantener a el puntero de ordNatVertice que 
  * 		 siga apuntando al vertice correspondiente.
 */
+
+/*
 struct _PosVerticeSt
 {
 	Vertice vertice;
 	Vertice ordNatVertice;
 };
+*/
 
-typedef struct _PosVerticeSt * PosVertice;
+//typedef struct _PosVerticeSt * PosVertice;
 
 
 typedef struct _GrafoSt
 {
 	u32 nver; // cantidad de vertices
 	u32 mlados; // cantidad de lados
-	u32 ccolor; // cantidad de colores
 	u32 delta; // grado maximo del grafo
-	
-	// arreglo de punteros a PosVertice
-	PosVertice * vertices;
 
+	Vertice * vertices;
 
-	Vertice * prevertices; // Arreglo de punteros de VerticeSt -> luego NULL
-	//Vertice * vertOrdNat; // Arreglo de punteros de VerticeSt Orden Natural
 } GrafoSt;
 
 #endif //_ESTRUCTURAGRAFO_H

@@ -17,9 +17,7 @@ Grafo ConstruccionDelGrafo()
 	//inicializo los datos
 	g->nver = 0;
 	g->mlados = 0 ;
-	g->ccolor = 0;
 	g->delta  = 0;
-	g->prevertices = NULL;
 	g->vertices = NULL;
     //g->vertOrdNat = NULL;
     bool construccionExitosa = run_parser(g);
@@ -35,17 +33,17 @@ Grafo ConstruccionDelGrafo()
 void DestruccionDelGrafo(Grafo G){
 	// vaciar los arreglos de punteros de cada vecino de cada vertice
 	for(u32 j=0 ; j < G->nver; j++){
-		for(u32 k=0 ; k<G->vertices[j]->vertice->gradov; k++){
-      		G->vertices[j]->vertice->vecinos[k] = NULL;
+		for(u32 k=0 ; k<G->vertices[j]->gradov; k++){
+      		G->vertices[j]->vecinos[k] = NULL;
     	}
-    	free(G->vertices[j]->vertice->vecinos);
-		G->vertices[j]->vertice->vecinos = NULL;
+    	free(G->vertices[j]->vecinos);
+		G->vertices[j]->vecinos = NULL;
 	}
 	// eliminar cada vertice de la estructura
 	for(u32 l=0 ; l<G->nver; l++){
-		G->vertices[l]->ordNatVertice = NULL;
-		free(G->vertices[l]->vertice);
-		G->vertices[l]->vertice = NULL;
+		//G->vertices[l]->ordNatVertice = NULL;
+		//free(G->vertices[l]->vertice);
+		//G->vertices[l]->vertice = NULL;
 		free(G->vertices[l]);
 		G->vertices[l] = NULL;
 	}
@@ -53,7 +51,7 @@ void DestruccionDelGrafo(Grafo G){
 	free(G->vertices);
   	G->vertices = NULL;
 	// deberia quedarse en NULL desde el parser
-	G->prevertices = NULL;
+	//G->prevertices = NULL;
   	free(G);
   	G = NULL;
 }
@@ -74,7 +72,7 @@ u32 Delta(Grafo G){
 }
 
 u32 Nombre(u32 i,Grafo G){
-  return G->vertices[i]->ordNatVertice->nombrev;
+  return G->vertices[i]->nombrev;
 }
 
 
@@ -83,14 +81,14 @@ u32 Grado(u32 i,Grafo G){
   		return ErrorGrafo;
   	}
   	else{
-  		return G->vertices[i]->vertice->gradov;
+  		return G->vertices[i]->gradov;
   	}
 }
 
 
 u32 IndiceONVecino(u32 j,u32 k,Grafo G){
-	if (k < NumeroDeVertices(G) && G->vertices[k]->ordNatVertice->gradov > j){
-		return G->vertices[k]->ordNatVertice->vecinos[j]->positionOrdNat;
+	if (k < NumeroDeVertices(G) && G->vertices[k]->gradov > j){
+		return G->vertices[k]->vecinos[j]->positionOrdNat;
 	}
 	return ErrorGrafo;
 }

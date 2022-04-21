@@ -5,9 +5,6 @@
 
 #include "AniquilamientoPositronicoIonizanteGravitatorio.h"
 
-// funcion hash
-int hash(char *str);
-
 // Busca/crea si no existe el vertice
 // return: puntero al vertice.
 Vertice buscar_vertice(Grafo g, u32 nombreVertice);
