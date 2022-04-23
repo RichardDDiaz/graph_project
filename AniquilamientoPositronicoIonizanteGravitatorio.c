@@ -17,10 +17,9 @@ Grafo ConstruccionDelGrafo()
 	//inicializo los datos
 	g->nver = 0;
 	g->mlados = 0 ;
-	g->ccolor = 0;
 	g->delta  = 0;
 	g->vertices = NULL;
-    g->vertOrdNat = NULL;
+    //g->vertOrdNat = NULL;
     bool construccionExitosa = run_parser(g);
 	if(construccionExitosa){
 		return g;
@@ -40,23 +39,19 @@ void DestruccionDelGrafo(Grafo G){
     	free(G->vertices[j]->vecinos);
 		G->vertices[j]->vecinos = NULL;
 	}
-	// eliminar cada vertice del arreglo de punteros de vertices
+	// eliminar cada vertice de la estructura
 	for(u32 l=0 ; l<G->nver; l++){
-
+		//G->vertices[l]->ordNatVertice = NULL;
+		//free(G->vertices[l]->vertice);
+		//G->vertices[l]->vertice = NULL;
 		free(G->vertices[l]);
 		G->vertices[l] = NULL;
 	}
 
-	// eliminar cada vertice del arreglo de punteros de vertices de orden natural
-	for(u32 l=0 ; l<G->nver; l++){
-		//free(G->vertOrdNat[l]);
-		G->vertOrdNat[l] = NULL;
-	}
-	free(G->vertOrdNat);
-	G->vertOrdNat = NULL;
-	
 	free(G->vertices);
   	G->vertices = NULL;
+	// deberia quedarse en NULL desde el parser
+	//G->prevertices = NULL;
   	free(G);
   	G = NULL;
 }
@@ -77,7 +72,7 @@ u32 Delta(Grafo G){
 }
 
 u32 Nombre(u32 i,Grafo G){
-  return G->vertOrdNat[i]->nombrev;
+  return G->vertices[i]->nombrev;
 }
 
 
@@ -86,16 +81,14 @@ u32 Grado(u32 i,Grafo G){
   		return ErrorGrafo;
   	}
   	else{
-  		return G->vertOrdNat[i]->gradov;
+  		return G->vertices[i]->gradov;
   	}
 }
 
+
 u32 IndiceONVecino(u32 j,u32 k,Grafo G){
-	if (k < NumeroDeVertices(G) && G->vertOrdNat[k]->gradov > j &&
-		G->vertOrdNat[k]->vecinos[j]->nombrev == G->vertOrdNat[j]->nombrev){
-			printf("IndiceONVecino if\n");
-			return j;
+	if (k < NumeroDeVertices(G) && G->vertices[k]->gradov > j){
+		return G->vertices[k]->vecinos[j]->positionOrdNat;
 	}
-	printf("IndiceONVecino else\n");
 	return ErrorGrafo;
 }

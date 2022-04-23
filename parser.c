@@ -5,7 +5,7 @@
 #include "parser.h"
 
 
-#define UNASSIGNED_COLOR 4294967295
+//#define UNASSIGNED_COLOR 4294967295
 
 //Iniciamos todos los espacios de memoria en NULL
 void inicializarNullVertices(Grafo g){
@@ -19,7 +19,6 @@ Vertice crearDefaultVertice(u32 nombreVertice){
     Vertice v = malloc(sizeof(struct _VerticeSt));
     v->nombrev = nombreVertice;
     v->gradov = 0;
-    v->colorv = UNASSIGNED_COLOR;
     v->vecinos = NULL;
     return v;
 }
@@ -77,8 +76,7 @@ void emparejarVertices(Vertice verticeA,Vertice verticeB){
     verticeB->vecinos[gradoB-1] = verticeA;
 
 }
-
-
+//////////////////////////////////////////////////
 
 // Compara los vertices indicando cual es mayor
 int cmpfunc (const void * a, const void * b) {
@@ -95,17 +93,6 @@ int cmpfunc (const void * a, const void * b) {
     return 0;
   }
 }
-
-
-
-// Copia de vertices a vertOrdNat
-void copiaVertOrdNat(Grafo G){
-  for(u32 i=0;i<G->nver; i++ ){
-    G->vertOrdNat[i] = G->vertices[i];
-  }
-}
-
-
 
 /*
 Ejecucion de la carga de datos en un grafo g, apartir de un archivo de texto
@@ -154,7 +141,7 @@ bool run_parser(Grafo g){
     char * edge = NULL;
     char linea[80];
 
-        //char pseudo_edge[5]; // +1 por caracter de terminación
+    //char pseudo_edge[5]; // +1 por caracter de terminación
     // si el primer caracter es EOF, no hay mas datos
     // fscanf(file,"%s %lu %lu",pseudo_edge , &nver, &mlado) 
     // fgets(pseudo_edge, 5, file);
@@ -183,15 +170,13 @@ bool run_parser(Grafo g){
     g->mlados = mlado;
     g->vertices = malloc(sizeof(Vertice) * nver);
     inicializarNullVertices(g);
-    g->vertOrdNat = malloc(sizeof(Vertice) * nver);
+    //g->vertOrdNat = malloc(sizeof(Vertice) * nver);
     g->delta = 0;
 
 
     u32 vA, vB;
     u32 count_m = 0u;
-    //printear firstchar
-    //firstchar = fgetc(file);
-    //printf("firstchar: %c\n", firstchar);
+
     while(count_m <= mlado-1){
         firstchar = fgetc(file);
 
@@ -219,7 +204,7 @@ bool run_parser(Grafo g){
             }
             count_m++;
         }
-        // la linea no lo cumple el formato
+        // la linea no cumple el formato
         else{
             puts(strcat("Error en formato de entrada linea e:\n ", linea));
             DestruccionDelGrafo(g);
@@ -229,10 +214,15 @@ bool run_parser(Grafo g){
         
     }
 
+    // ordenar de forma natural
     qsort(g->vertices, g->nver, sizeof(Vertice), cmpfunc);
 
-    copiaVertOrdNat(g);
+    // setear la posición de los vertices
+    for(u32 i=0; i<g->nver; i++){
+        g->vertices[i]->positionOrdNat = i;
+    }
 
     fclose(file);
+
     return true;
 }
