@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <AlduinPaarthurnaxIrileth.h>
-#include <EstructuraGrafo.h>
+
+#include "AlduinPaarthurnaxIrileth.h"
 
 
 /*
@@ -18,7 +18,8 @@ Coloreo, con la cantidad de vertices
 La funcion devuelve la cantidad de colores que Greedy asigno.
 */
 u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
-    u32 nColores, k = 1;
+    u32  k = 1;
+	u32 nColores = 1;
     u32 * conjuntoColoresUsados = NULL; //conjunto de colores usados en cada vertice
     // Inicializar arreglo Coloreo con -1
     for(u32 i = 0; i < NumeroDeVertices(G); i++){Coloreo[i] = -1;}
@@ -28,17 +29,19 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
 
     // para cada numero k en Orden de indice i
     for(u32 i = 1; i < NumeroDeVertices(G); i++){
-        u32 totalColoresUsadosK, indiceVecinosK, colorVecinoK = 0;
+        u32 totalColoresUsadosK = 0;
+		u32 indiceVecinosK = 0;
+		u32 colorVecinoK = 0;
         // tomar el vertice en posicion natural k del grafo G
         k = Orden[i];
         // crear un conjunto con longitud de los colores usados hasta ese momento
         conjuntoColoresUsados = malloc(nColores * sizeof(u32));
         // Inicializar con -1
-        for(u32 j = 0; j < nColores; j++){conjuntoColoresUsados[j] = -1;}
+        for(u32 j = 0; j < nColores; j++){conjuntoColoresUsados[j] = -1lu;}
         // chequear los colores disponibles que no usarson sus vecinos
         while(totalColoresUsadosK < nColores && indiceVecinosK < Grado(k,G)){
             colorVecinoK = Coloreo[IndiceONVecino(indiceVecinosK, k, G)];
-            if (colorVecinoK != -1){
+            if (colorVecinoK != -1lu){
                 // significa que si esta coloreado
                 conjuntoColoresUsados[colorVecinoK] = 1;
                 totalColoresUsadosK++;
@@ -59,7 +62,7 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
         else {
             // buscar el primer color libre
             for(u32 j = 0; j < nColores; j++){
-                if (conjuntoColoresUsados[j] == -1){
+                if (conjuntoColoresUsados[j] == -1lu){
                     // asignarlo al vertice en posicion natural k, osea poner
                     // el color nuevo en la posicion k del arreglo Coloreo
                     Coloreo[k] = j;
