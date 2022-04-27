@@ -18,16 +18,10 @@ int main(){
         printf("== fun Numero Vertices: %lu ==\n", g->nver);
         printf("== fun Numero Lados: %lu ==\n", g->mlados);
         printf("== fun Delta: %lu ==\n", g->delta);
-
         /*------------------------- GREEDY -------------------------------*/ 
         // crear arreglo orden e inicializar con los indices de los vertices
         u32 * orden = malloc(g->nver * sizeof(u32));
         for(u32 i = 0; i < g->nver; i++){orden[i] = i;}
-
-        //for(u32 i = 0; i < g->nver; i++){
-        //    printf("vertice %lu, postnat: %lu\n", g->vertices[i]->nombrev, i);
-        //} 
-
         // Arreglo de colores
         u32 * coloreo = malloc(g->nver * sizeof(u32));
         // llamar a greedy
