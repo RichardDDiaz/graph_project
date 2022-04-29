@@ -19,6 +19,7 @@ int main(){
         printf("== fun Numero Lados: %lu ==\n", g->mlados);
         printf("== fun Delta: %lu ==\n", g->delta);
         /*------------------------- GREEDY -------------------------------*/ 
+        /*
         // crear arreglo orden e inicializar con los indices de los vertices
         u32 * orden = malloc(g->nver * sizeof(u32));
         for(u32 i = 0; i < g->nver; i++){orden[i] = i;}
@@ -39,8 +40,13 @@ int main(){
         //liberar los arreglos de orden y coloreo
         free(orden);
         free(coloreo);
-        /*--------------------------------------------------------*/ 
+        */
+        /*--------------------------------------------------------*/
+
+        /*-----------------OrdenFromKey---------------------------*/
         
+
+
         DestruccionDelGrafo(g);
         return 0;
         

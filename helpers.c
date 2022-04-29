@@ -4,6 +4,23 @@
 
 #include "helpers.h"
 
+
+int compararTuplas(const void * a, const void * b){
+    Tuple t1 = (Tuple)a;
+    Tuple t2 = (Tuple)b;
+    
+    if(t1->v1 > t2->v1){
+        return 1;
+    }
+    else if(t1->v1 < t2->v1){
+        return -1;
+    }
+    else{
+            return 0;
+    }
+}
+
+
 u32 greedy_check(Grafo g, u32 * Coloreo, u32 nColores){
     //recorrer cada vertice del grafo g
     u32 posicionJvecinodeK = 0;

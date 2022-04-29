@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include "helpers.h"
 #include "AlduinPaarthurnaxIrileth.h"
 #define ErrorGrafo 4294967295
 
@@ -72,4 +73,48 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
         free(conjuntoColoresUsados);
     }
     return nColores;
+}
+
+
+/*  array apuntado por key, el cual se asume que es de longitud n.
+    se llena el array al cual apunta Orden, el cual se asume que tiene 
+        suficiente memoria para al menos n entradas.
+    asume que el rango de key es n o menor, es decir key[i]≤ n para todo i.
+
+    """Lo que NO se asume, 
+    y de hecho casi nunca sera cierto, es que key sea una biyeccion."""
+
+    Debe llenar Orden de forma tal que en el lugar 0 vaya el  indice i0 
+    tal que key[i0] sea el maximo de todos los valores key[i].
+    "Notar que dice el indice no el valor de key[i]"
+
+    obtener el indice del mayor valor del arreglo key y guardar en i0
+    del arreglo de orden, y asi para cada indice
+*/
+char OrdenFromKey(u32 n,u32* key,u32* Orden){
+    // crear arreglo de Tuple con malloc
+    Tuple * arregloTuplas = malloc(n*sizeof(Tuple));
+    if (arregloTuplas == NULL){return '1';}
+    // llenar arregloTuplas con los valores de key en v1 e indices en v2
+    for(u32 i = 0; i < n; i++){
+        arregloTuplas[i] = malloc(sizeof(struct _Tuple));
+        arregloTuplas[i]->v1 = key[i];
+        arregloTuplas[i]->v2 = i;
+    }
+
+    //ordenar usando qsort y la funcion compararTuplas
+    qsort(arregloTuplas, n, sizeof(Tuple), compararTuplas);
+
+    //almacenar los indices ordenados en Orden
+    for(u32 i = 0; i < n; i++){
+        Orden[i] = arregloTuplas[i]->v2;
+    }
+
+    //liberar arregloTuplas
+    for(u32 i = 0; i < n; i++){
+        free(arregloTuplas[i]);
+    }
+    free(arregloTuplas);
+    arregloTuplas = NULL;
+    return '0';
 }
