@@ -7,7 +7,9 @@
 #include <assert.h>
 
 #include "AniquilamientoPositronicoIonizanteGravitatorio.h"
+#include "AlduinPaarthurnaxIrileth.h"
 #include "EstructuraGrafo.h"
+#include "helpers.h"
 
 int main(){
     printf("Proyecto GRAFO iniciado");
@@ -16,20 +18,29 @@ int main(){
         printf("== fun Numero Vertices: %lu ==\n", g->nver);
         printf("== fun Numero Lados: %lu ==\n", g->mlados);
         printf("== fun Delta: %lu ==\n", g->delta);
+        /*------------------------- GREEDY -------------------------------*/ 
+        // crear arreglo orden e inicializar con los indices de los vertices
+        u32 * orden = malloc(g->nver * sizeof(u32));
+        for(u32 i = 0; i < g->nver; i++){orden[i] = i;}
+        // Arreglo de colores
+        u32 * coloreo = malloc(g->nver * sizeof(u32));
+        // llamar a greedy
+        u32 nColores = Greedy(g, orden, coloreo);
+        printf("== fun Greedy: %lu ==\n", nColores);
 
-
-        //recorrer todos los vertices
-        for(u32 i=0; i<g->nver; i++){
-            printf("== nombreV: %lu, OrdV: %lu ==\n", g->vertices[i]->nombrev, i);
+        // Verificar el coloreo de greedy sea propio
+        if(greedy_check(g, coloreo, nColores)){
+            printf("== fun Greedy: OK ==\n");
+        }
+        else{
+            printf("== fun Greedy: ERROR ==\n");
         }
 
-        // Prueba: IndiceONVecino
-        printf("IndiceONVecino: \n");
-        printf("indice k: %lu, vertice: %lu\n",0lu, Nombre(0,g));
-        for(u32 i=0; i<g->vertices[0]->gradov; i++){
-            printf("vecinoIndice j: %lu, vecino: %lu\n", i, IndiceONVecino(i,0,g));
-        } 
-
+        //liberar los arreglos de orden y coloreo
+        free(orden);
+        free(coloreo);
+        /*--------------------------------------------------------*/ 
+        
         DestruccionDelGrafo(g);
         return 0;
         
