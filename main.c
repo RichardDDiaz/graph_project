@@ -44,8 +44,41 @@ int main(){
         /*--------------------------------------------------------*/
 
         /*-----------------OrdenFromKey---------------------------*/
-        
+        u32 n = 20;
+        // crear un arreglo de longitud 20 con numeros aleatorios
+        // entre 0 y 20
+        u32 * key_arreglo = malloc(n * sizeof(u32));
+        for(u32 i = 0; i < n; i++){
+            key_arreglo[i] = rand() % n;
+        }
+        printf("== ARREGLO KEY\n:");
+        for(u32 i = 0; i < n; i++){
+            printf("%lu ", key_arreglo[i]);
+        }
+        printf("\n");
 
+        u32 * orden_arreglo = malloc(n * sizeof(u32));
+
+        // llamar a ordenFromKey
+        char rorden = OrdenFromKey(n, key_arreglo, orden_arreglo);
+
+        if (rorden == '1'){
+            printf("== fun OrdenFromKey: ERROR, falta memoria ==\n");
+        }
+        else{
+            printf("== fun OrdenFromKey: OK, se ejecuto bien ==\n");
+        }
+
+        printf("== ARREGLO ORDEN: ");
+        for(u32 i = 0; i < n; i++){
+            printf("%lu ", orden_arreglo[i]);
+        }
+        printf("\n FINALIZADO\n");
+
+        for (u32 i = 0; i < n; i++){
+            printf("%lu, ", key_arreglo[orden_arreglo[i]]);
+        }
+        printf("\n");
 
         DestruccionDelGrafo(g);
         return 0;

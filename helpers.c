@@ -6,14 +6,14 @@
 
 
 int compararTuplas(const void * a, const void * b){
-    Tuple t1 = (Tuple)a;
-    Tuple t2 = (Tuple)b;
+    Tuple t1 = *((Tuple*)a);
+    Tuple t2 = *((Tuple*)b);
     
     if(t1->v1 > t2->v1){
-        return 1;
+        return -1;
     }
     else if(t1->v1 < t2->v1){
-        return -1;
+        return 1;
     }
     else{
             return 0;

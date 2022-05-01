@@ -98,16 +98,18 @@ char OrdenFromKey(u32 n,u32* key,u32* Orden){
     // llenar arregloTuplas con los valores de key en v1 e indices en v2
     for(u32 i = 0; i < n; i++){
         arregloTuplas[i] = malloc(sizeof(struct _Tuple));
-        arregloTuplas[i]->v1 = key[i];
-        arregloTuplas[i]->v2 = i;
+        arregloTuplas[i]->v1 = key[i]; //valor del key
+        arregloTuplas[i]->v2 = i; //indice de ese valor
     }
+
 
     //ordenar usando qsort y la funcion compararTuplas
     qsort(arregloTuplas, n, sizeof(Tuple), compararTuplas);
-
+    
     //almacenar los indices ordenados en Orden
     for(u32 i = 0; i < n; i++){
         Orden[i] = arregloTuplas[i]->v2;
+        // imprimir key y indice
     }
 
     //liberar arregloTuplas
