@@ -14,6 +14,13 @@
 int main(){
     printf("Proyecto GRAFO iniciado");
     
+    /*------------------------- ALEATORIZAR KEYS -------------------------------*/ 
+    /*
+    Nota: Retorna numeros aleatorios, requiere mejorar la función ya que solo retorna 
+    numeros "pseudo-aleatorios" que forman parte de una misma secuencia. 
+    Es decir: Si con R generamos los [0,n] numeros aleatorios, con R+1 generara 
+    los [1,n+1] numeros siguientes de la secuencia.
+    */
     u32 n = 10u;
     u32 * key = malloc(sizeof(int)*10);
     for(u32 i=0; i<n;i++){
@@ -21,8 +28,8 @@ int main(){
     }
     u32 R = 10u;
     AleatorizarKeys(n,R,key);
-
     free(key);
+    /*--------------------------------------------------------*/ 
 
     Grafo g = ConstruccionDelGrafo();
     if(g!=NULL){
