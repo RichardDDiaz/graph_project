@@ -113,7 +113,7 @@ void AleatorizarKeys(u32 n,u32 R,u32* key){
         ra1= (u32)rand() +1;
         ra2= (u32)rand();
         ra3 = (u32)(ra1 + ra2);
-        key[i] = ra3;
+        key[i] = ra3 % n;
         
     }
     printf("\n[");
