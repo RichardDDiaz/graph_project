@@ -47,7 +47,7 @@ int main(){
         printf("== fun Greedy: %lu ==\n", nColores);
 
         // Verificar el coloreo de greedy sea propio
-        //if(greedy_check(g, coloreo, nColores)){
+        if(greedy_check(g, coloreo, nColores)){
             if(true){
             printf("== fun Greedy: OK ==\n");
         }
