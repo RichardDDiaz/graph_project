@@ -75,6 +75,33 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
 }
 
 
+void AleatorizarKeys(u32 n,u32 R,u32* key){
+    printf("\n R: %lu \n",R);
+
+    u32 ra1= rand();
+    u32 ra2= rand();
+    u32 ra3 = 0;
+    
+    for(u32 i=0; i<n; i++){
+        srand(R+i);
+        ra1= (u32)rand() +1;
+        ra2= (u32)rand();
+        ra3 = (u32)(ra1 + ra2);
+        key[i] = ra3 % n;
+        
+    }
+    printf("\n[");
+    for(u32 i=0; i<n; i++){
+        
+        printf(", %lu",key[i]);
+        
+    }
+    printf("]\n");
+}
+
+
+
+
 // Permuta cada color por uno nuevo de manera pseudo-aleatoria con 
 // la semilla R, retornando un arreglo con los colores intercambiados.
 u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
