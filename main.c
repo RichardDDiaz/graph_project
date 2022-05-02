@@ -19,15 +19,26 @@ int main(){
         printf("== fun Numero Lados: %lu ==\n", g->mlados);
         printf("== fun Delta: %lu ==\n", g->delta);
         /*------------------------- GREEDY -------------------------------*/ 
-        /*
+        
+        clcok_t tgreedy_init, tgreedy_end;
+        u32 segundos;
         // crear arreglo orden e inicializar con los indices de los vertices
         u32 * orden = malloc(g->nver * sizeof(u32));
         for(u32 i = 0; i < g->nver; i++){orden[i] = i;}
         // Arreglo de colores
         u32 * coloreo = malloc(g->nver * sizeof(u32));
         // llamar a greedy
+        tgreedy_init = clock();
         u32 nColores = Greedy(g, orden, coloreo);
+        tgreedy_end = clock();
         printf("== fun Greedy: %lu ==\n", nColores);
+
+        segundos = (u32)(tgreedy_init - tgreedy_end) / CLOCKS_PER_SEC;
+        printf("== fun Tiempo Greedy: %lu horas, %lu minutos, %lu segundos ==\n", 
+            segundos/3600, 
+            (segundos%3600)/60, 
+            segundos%60);
+    
 
         // Verificar el coloreo de greedy sea propio
         if(greedy_check(g, coloreo, nColores)){
@@ -40,11 +51,11 @@ int main(){
         //liberar los arreglos de orden y coloreo
         free(orden);
         free(coloreo);
-        */
+        
         /*--------------------------------------------------------*/
 
         /*-----------------OrdenFromKey---------------------------*/
-        u32 n = 20;
+        /*u32 n = 20;
         // crear un arreglo de longitud 20 con numeros aleatorios
         // entre 0 y 20
         u32 * key_arreglo = malloc(n * sizeof(u32));
@@ -79,7 +90,7 @@ int main(){
             printf("%lu, ", key_arreglo[orden_arreglo[i]]);
         }
         printf("\n");
-
+        */
         DestruccionDelGrafo(g);
         return 0;
         
