@@ -73,3 +73,34 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
     }
     return nColores;
 }
+
+
+// Permuta cada color por uno nuevo de manera pseudo-aleatoria con 
+// la semilla R, retornando un arreglo con los colores intercambiados.
+u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
+    // copiamos coloreo
+    u32 * ColoreoNuevo = malloc(n * sizeof(u32));
+    u32 cantColores = 0;
+    printf("\n R: %lu ", R);
+    for(u32 i=0; i<n; i++){
+        // actualizamos la cantidad de colores
+        cantColores = (cantColores <  Coloreo[i]) ? Coloreo[i] : cantColores;
+        ColoreoNuevo[i] = Coloreo[i];
+    }
+
+    cantColores += 1;
+
+    // control de colores
+    u32 * controlColor = malloc(cantColores * sizeof(u32));
+
+    printf("\n ColoreoNuevo:");
+    for(u32 i=0; i<n; i++){
+        printf(",%lu ", ColoreoNuevo[i]);
+    }
+    printf("\n cantColores: %lu", cantColores);
+
+    // Establecer arrais de aleatoriedad con semilla R
+    
+    return ColoreoNuevo;
+
+}
