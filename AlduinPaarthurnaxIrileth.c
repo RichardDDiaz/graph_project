@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h> 
 
 #include "helpers.h"
 #include "AlduinPaarthurnaxIrileth.h"
 #define ErrorGrafo 4294967295
 
+//#define RAND_MAX 4294967295
 
 /*
 La funcion escribe en el lugar i de Coloreo[] cual es el color que 
@@ -93,6 +95,7 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
 }
 
 
+
 /*  array apuntado por key, el cual se asume que es de longitud n.
     se llena el array al cual apunta Orden, el cual se asume que tiene 
         suficiente memoria para al menos n entradas.
@@ -136,4 +139,52 @@ char OrdenFromKey(u32 n,u32* key,u32* Orden){
     free(arregloTuplas);
     arregloTuplas = NULL;
     return '0';
+}
+
+
+//#include <stdint.h>
+
+/* These state variables must be initialised so that they are not all zero. */
+//uint32_t w, x, y, z;
+/*
+u32 w, x, y, z;
+x = 0; y = 10; w=3; z=7;
+
+
+//uint32_t xorshift128(void) 
+u32 xorshift128(void) 
+{
+    //uint32_t t = x;
+    u32 t = x;
+    t ^= t << 11U;
+    t ^= t >> 8U;
+    x = y; y = z; z = w;
+    w ^= w >> 19U;
+    w ^= t;
+    return w;
+}
+*/
+
+void AleatorizarKeys(u32 n,u32 R,u32* key){
+    printf("\n R: %lu \n",R);
+
+    u32 ra1= rand();
+    u32 ra2= rand();
+    u32 ra3 = 0;
+    
+    for(u32 i=0; i<n; i++){
+        srand(R+i);
+        ra1= (u32)rand() +1;
+        ra2= (u32)rand();
+        ra3 = (u32)(ra1 + ra2);
+        key[i] = ra3 % n;
+        
+    }
+    printf("\n[");
+    for(u32 i=0; i<n; i++){
+        
+        printf(", %lu",key[i]);
+        
+    }
+    printf("]\n");
 }
