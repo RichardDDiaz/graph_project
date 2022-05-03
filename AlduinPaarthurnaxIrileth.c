@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <time.h> 
 
+#include "helpers.h"
 #include "AlduinPaarthurnaxIrileth.h"
 #define ErrorGrafo 4294967295
 
@@ -21,6 +22,10 @@ Coloreo, con la cantidad de vertices
 La funcion devuelve la cantidad de colores que Greedy asigno.
 */
 u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
+    if (G == NULL || Orden == NULL || Coloreo == NULL){
+        return ErrorGrafo;
+    }
+
     u32  k = 0;
 	u32 nColores = 1;
     //conjunto de colores usados en cada vertice
@@ -73,9 +78,68 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
         // liberar conjuntoColoresUsados
         free(conjuntoColoresUsados);
     }
+
+    // si tiene 2 colores, bipartito
+    if (nColores == 2lu){
+        // si solo hay dos colores, creeremos que es greedy y que solo uso
+        // los colores 0 y 1 para los vertices
+        // cambiar los colores de 0 por 2 y los de 1 por 0 del arreglo coloreo
+        for(u32 i = 0; i < NumeroDeVertices(G); i++){
+            if (Coloreo[i] == 0){Coloreo[i] = 2;}
+            else if (Coloreo[i] == 1){Coloreo[i] = 0;}
+        }
+    }
+
+    conjuntoColoresUsados = NULL;
     return nColores;
 }
 
+
+
+/*  array apuntado por key, el cual se asume que es de longitud n.
+    se llena el array al cual apunta Orden, el cual se asume que tiene 
+        suficiente memoria para al menos n entradas.
+    asume que el rango de key es n o menor, es decir key[i]≤ n para todo i.
+
+    """Lo que NO se asume, 
+    y de hecho casi nunca sera cierto, es que key sea una biyeccion."""
+
+    Debe llenar Orden de forma tal que en el lugar 0 vaya el  indice i0 
+    tal que key[i0] sea el maximo de todos los valores key[i].
+    "Notar que dice el indice no el valor de key[i]"
+
+    obtener el indice del mayor valor del arreglo key y guardar en i0
+    del arreglo de orden, y asi para cada indice
+*/
+char OrdenFromKey(u32 n,u32* key,u32* Orden){
+    // crear arreglo de Tuple con malloc
+    Tuple * arregloTuplas = malloc(n*sizeof(Tuple));
+    if (arregloTuplas == NULL){return '1';}
+    // llenar arregloTuplas con los valores de key en v1 e indices en v2
+    for(u32 i = 0; i < n; i++){
+        arregloTuplas[i] = malloc(sizeof(struct _Tuple));
+        arregloTuplas[i]->v1 = key[i]; //valor del key
+        arregloTuplas[i]->v2 = i; //indice de ese valor
+    }
+
+
+    //ordenar usando qsort y la funcion compararTuplas
+    qsort(arregloTuplas, n, sizeof(Tuple), compararTuplas);
+    
+    //almacenar los indices ordenados en Orden
+    for(u32 i = 0; i < n; i++){
+        Orden[i] = arregloTuplas[i]->v2;
+        // imprimir key y indice
+    }
+
+    //liberar arregloTuplas
+    for(u32 i = 0; i < n; i++){
+        free(arregloTuplas[i]);
+    }
+    free(arregloTuplas);
+    arregloTuplas = NULL;
+    return '0';
+}
 
 
 //#include <stdint.h>
