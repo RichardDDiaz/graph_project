@@ -2,7 +2,7 @@
 
 ## How to Compile it:
 ```
-gcc -Wall -Wextra -O3 -std=c99 main.c AniquilamientoPositronicoIonizanteGravitatorio.c AlduinPaarthurnaxIrileth.c parser.c -o main 
+gcc -Wall -Wextra -O3 -std=c99 main.c AniquilamientoPositronicoIonizanteGravitatorio.c AlduinPaarthurnaxIrileth.c parser.c helpers.c -o main 
    
 echo "./grafos/NOMBRE_GRAFO" | ./main  
 ```

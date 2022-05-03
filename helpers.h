@@ -20,4 +20,6 @@ int compararTuplas(const void * a, const void * b);
 //return 1 si el coloreo es propio, 0 caso contrario.
 u32 greedy_check(Grafo g, u32 * Coloreo, u32 nColores);
 
+int ordenfromkey_check(u32 n,u32* key,u32* Orden);
+
 #endif
