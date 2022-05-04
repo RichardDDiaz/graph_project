@@ -22,6 +22,7 @@ int main(){
     Es decir: Si con R generamos los [0,n] numeros aleatorios, con R+1 generara 
     los [1,n+1] numeros siguientes de la secuencia.
     */
+   /*
     u32 n = 10u;
     u32 * key = malloc(sizeof(int)*10);
     for(u32 i=0; i<n;i++){
@@ -30,12 +31,13 @@ int main(){
     u32 R = 10u;
     AleatorizarKeys(n,R,key);
     free(key);
+    */
     /*--------------------------------------------------------*/ 
 
 
     /*------------------------- PermutarColores -------------------------------*/
     u32 n = 5;
-    u32 R = 3;
+    u32 R = 105;
     u32 * Coloreo = malloc(sizeof(u32) * 5);
 
     Coloreo[0] = 0;

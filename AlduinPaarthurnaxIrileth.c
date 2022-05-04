@@ -75,59 +75,101 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
 }
 
 
+// Setea cada posición de key con un nuevo valor aleatorio usando la semilla R
 void AleatorizarKeys(u32 n,u32 R,u32* key){
-    printf("\n R: %lu \n",R);
-
     u32 ra1= rand();
     u32 ra2= rand();
     u32 ra3 = 0;
     
     for(u32 i=0; i<n; i++){
+        // seteamos la semilla R
         srand(R+i);
+        // Obtenemos los numeros random
         ra1= (u32)rand() +1;
         ra2= (u32)rand();
         ra3 = (u32)(ra1 + ra2);
         key[i] = ra3 % n;
-        
     }
-    printf("\n[");
-    for(u32 i=0; i<n; i++){
-        
-        printf(", %lu",key[i]);
-        
+}
+
+// retorna el color i de ColorNat si esta disponible y actualiza el color
+// a utilizar en control, si no esta disponible iteramos por Coloreo hasta encontrar uno.
+// control[k]==1 color usado; control[k]==0 color
+//u32 buscarColor(u32 * control, u32 i, u32 * colorNat, u32 cantColor){
+u32 buscarColor(u32 * colorNat, u32 i,u32 * control, u32 cantColor){
+    // retornamos el color disponible
+    if(control[i]==0){
+        control[i] = 1;
+        return colorNat[i];
     }
-    printf("]\n");
+    // buscamos linealmente uno disponible
+    else{
+        u32 j = i;
+        do{
+            j = (j+1) % cantColor;
+        }while(control[j] == 1);
+        // seteamos el color a usar en 1 "no usable"
+        control[j] = 1;
+        // retornamos color encontrado disponible
+        return (colorNat[j]);
+    }
 }
 
 
 
-
-// Permuta cada color por uno nuevo de manera pseudo-aleatoria con 
-// la semilla R, retornando un arreglo con los colores intercambiados.
+// Permuta cada color de ColoreoNuevo por uno de Coloreo de manera pseudo-aleatoria con 
+// la semilla R.
 u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
+    u32 cantColores = 0;
+
+    // colores en orden natural
+    u32 * colorNat = malloc(sizeof(u32));
+    colorNat[cantColores] = 0;
+
     // copiamos coloreo
     u32 * ColoreoNuevo = malloc(n * sizeof(u32));
-    u32 cantColores = 0;
-    printf("\n R: %lu ", R);
     for(u32 i=0; i<n; i++){
         // actualizamos la cantidad de colores
-        cantColores = (cantColores <  Coloreo[i]) ? Coloreo[i] : cantColores;
+        if(cantColores <  (Coloreo[i])){
+            cantColores = Coloreo[i];
+
+            // agregamos un nuevo color en orden natural
+            colorNat = realloc(colorNat, sizeof(u32) * (cantColores+1));
+            colorNat[cantColores] = cantColores;
+        }
         ColoreoNuevo[i] = Coloreo[i];
     }
 
+    // +1 para obtener la cantidad de colores total
     cantColores += 1;
 
-    // control de colores
+    // Establecer arrays de aleatoriedad con semilla R
+    // keyColor obtendra la posición en que se consultara las celdas de colorNat
+    u32 * keysColor = malloc(cantColores * sizeof(u32));
+    AleatorizarKeys(cantColores,R,keysColor);
+
+    // controlColor: 0=color disponible en array colorNat; 1=color no disponible
     u32 * controlColor = malloc(cantColores * sizeof(u32));
+    // perColor: resultado de la biyección de permutar los colorNat
+    u32 * perColor = malloc(cantColores * sizeof(u32));
+    //u32 jColor = 0;
 
-    printf("\n ColoreoNuevo:");
-    for(u32 i=0; i<n; i++){
-        printf(",%lu ", ColoreoNuevo[i]);
+    // Permutar los colores
+    for(u32 i=0; i<cantColores; i++){
+        // buscamos el color disponible
+        perColor[i] = buscarColor(colorNat, keysColor[i],controlColor, cantColores);
     }
-    printf("\n cantColores: %lu", cantColores);
-
-    // Establecer arrais de aleatoriedad con semilla R
+    printf("\n Colores Permutados:");
+    for(u32 i=0; i<cantColores; i++){
+        printf(",%lu ", perColor[i]);
+    }
     
     return ColoreoNuevo;
 
 }
+
+
+// casos permutar colores:
+/* 
+  -chequear si colorNat no hace violación de segmento
+*/
