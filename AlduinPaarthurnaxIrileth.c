@@ -7,7 +7,56 @@
 #include "AlduinPaarthurnaxIrileth.h"
 #define ErrorGrafo 4294967295
 
-//#define RAND_MAX 4294967295
+
+
+u32* Bipartito(Grafo G){ 
+    u32* Coloreo = (u32*)malloc(NumeroDeVertices(G)*sizeof(u32));
+
+    //inicializar coloreo con ERRORGRAFO
+    for (u32 i=0; i < NumeroDeVertices(G); i++){
+        Coloreo[i] = ErrorGrafo;
+    }
+    
+    //Coloreamos el primer vertice de orden natural con 1
+    Coloreo[0] = 1lu;
+    //Encolar el indice 0 en la cola
+    Queue queue = NULL;
+    Queue lastElem = NULL;
+    enqueue(&queue, &lastElem, 0);
+    u32 index = 0;
+
+    if (queue == NULL){
+        printf("Error en la coloreacion\n");
+    }
+    while(queue != NULL){
+        //sacamos el primer elemento (indice) de la cola
+        index = dequeue(&queue, &lastElem);
+        //para cada vecino de indice
+        for (u32 i=0; i < Grado(index, G); i++){
+            //si el vecino no esta coloreado
+            if (Coloreo[IndiceONVecino(i, index, G)] == ErrorGrafo){
+                //coloreamos el vecino con el opuesto del coloreo de indice
+                Coloreo[IndiceONVecino(i, index, G)] = Coloreo[index] == 1lu ? 2lu : 1lu;
+                //encolamos el indice del vecino
+                enqueue(&queue, &lastElem, IndiceONVecino(i, index, G));
+                printf("indice: %lu\n", IndiceONVecino(i, index, G));
+            }
+            else {
+                //si el vecino esta coloreado
+                //si el coloreo de indice es igual al coloreo de vecino
+                if (Coloreo[index] == Coloreo[IndiceONVecino(i, index, G)]){
+                    //no es bipartito
+                    //DESTRUIR EL ARREGLO COLOREO Y LA COLA QUE CONTIENE LOS INDICES
+                    return NULL;
+                }
+            }
+        }
+    }
+    return Coloreo;
+}
+
+
+
 
 /*
 La funcion escribe en el lugar i de Coloreo[] cual es el color que 

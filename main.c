@@ -20,14 +20,14 @@ int main(){
     Es decir: Si con R generamos los [0,n] numeros aleatorios, con R+1 generara 
     los [1,n+1] numeros siguientes de la secuencia.
     */
-    u32 n = 10u;
-    u32 * key = malloc(sizeof(int)*10);
-    for(u32 i=0; i<n;i++){
+    //u32 n = 10u;
+    //u32 * key = malloc(sizeof(int)*10);
+    //for(u32 i=0; i<n;i++){
         //key[i] = 0;
-    }
-    u32 R = 10u;
-    AleatorizarKeys(n,R,key);
-    free(key);
+    //}
+    //u32 R = 10u;
+    //AleatorizarKeys(n,R,key);
+    //free(key);
     /*--------------------------------------------------------*/ 
 
     Grafo g = ConstruccionDelGrafo();
@@ -35,6 +35,25 @@ int main(){
         printf("== fun Numero Vertices: %lu ==\n", g->nver);
         printf("== fun Numero Lados: %lu ==\n", g->mlados);
         printf("== fun Delta: %lu ==\n", g->delta);
+        /*------------------------- BIPARTITO -------------------------------*/ 
+        u32 * coloreo = NULL;
+
+        coloreo = Bipartito(g);
+        if(coloreo!=NULL){
+            printf("== fun Coloreo: ");
+            for(u32 i=0; i<g->nver; i++){
+                printf("%lu ", coloreo[i]);
+            }
+            printf("==\n");
+        }else{
+            printf("== fun Coloreo: NULL ==\n");
+        }
+
+
+        /*-------------------------------------------------------------------*/ 
+
+
+
         /*------------------------- GREEDY -------------------------------*/ 
         /*
         clock_t tgreedy_init, tgreedy_end;
@@ -80,7 +99,7 @@ int main(){
         /*--------------------------------------------------------*/
 
         /*-----------------OrdenFromKey---------------------------*/
-        
+        /*
         u32 n = 10000;
         // crear un arreglo de longitud 20 con numeros aleatorios
         // entre 0 y 20
@@ -119,6 +138,7 @@ int main(){
         free(orden_arreglo);
         key_arreglo = NULL;
         orden_arreglo = NULL;
+        */
         /*--------------------------------------------------------*/
 
 

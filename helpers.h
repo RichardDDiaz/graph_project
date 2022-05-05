@@ -11,10 +11,24 @@ struct _Tuple{
 
 typedef struct _Tuple * Tuple;
 
+
+// estructura para queue
+struct _Queue{
+    u32 value;
+    struct _Queue * next;
+    struct _Queue * prev;
+};
+
+typedef struct _Queue * Queue;
+
 //funcion para ser usada por qsort:
 // compara los valores v1 y v2 de los tuplas 
 // para ordenarlas de mayor a menor
 int compararTuplas(const void * a, const void * b);
+
+void enqueue(Queue *queue, Queue *lastElem, u32 value);
+
+u32 dequeue(Queue *queue, Queue *lastElem);
 
 
 //return 1 si el coloreo es propio, 0 caso contrario.

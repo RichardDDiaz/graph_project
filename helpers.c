@@ -3,6 +3,44 @@
 #include <stdint.h>
 
 #include "helpers.h"
+#define ErrorGrafo 4294967295
+
+void enqueue(Queue *queue, Queue  *lastElem, u32 value){
+    Queue newElem = malloc(sizeof(struct _Queue));
+    newElem->value = value;
+    newElem->next = NULL;
+    newElem->prev = NULL;
+    if (*queue == NULL){
+        *queue = newElem;
+        *lastElem = newElem;
+    }
+    else {
+        (*queue)->prev = newElem;
+        newElem->next = *queue;
+        *queue = newElem;
+    }
+}
+
+
+u32 dequeue(Queue *queue, Queue *lastElem){
+    if (*queue == NULL){
+        return ErrorGrafo;
+    }
+    // extraemos el value de lastElem
+    u32 item = (*lastElem)->value;
+    // eliminamos lastElem de la lista
+    if ((*lastElem)->prev == NULL){
+        *queue = NULL;
+    }
+    else{
+        (*lastElem)->prev->next = NULL;
+        
+    }
+    free(*lastElem);
+
+    return item;
+}
+
 
 
 int compararTuplas(const void * a, const void * b){
