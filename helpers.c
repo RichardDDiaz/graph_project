@@ -7,6 +7,9 @@
 
 void enqueue(Queue *queue, Queue  *lastElem, u32 value){
     Queue newElem = malloc(sizeof(struct _Queue));
+    if (newElem == NULL){
+        return;
+    }
     newElem->value = value;
     newElem->next = NULL;
     newElem->prev = NULL;
@@ -19,6 +22,7 @@ void enqueue(Queue *queue, Queue  *lastElem, u32 value){
         newElem->next = *queue;
         *queue = newElem;
     }
+    newElem = NULL;
 }
 
 
@@ -29,16 +33,40 @@ u32 dequeue(Queue *queue, Queue *lastElem){
     // extraemos el value de lastElem
     u32 item = (*lastElem)->value;
     // eliminamos lastElem de la lista
-    if ((*lastElem)->prev == NULL){
+
+    //si es el unico elemento
+    if ((*lastElem)->prev == NULL && (*lastElem)->next == NULL){
         *queue = NULL;
+        free(*lastElem);
+        *lastElem = NULL;
     }
     else{
-        (*lastElem)->prev->next = NULL;
-        
+        Queue prev = (*lastElem)->prev;
+        prev->next = NULL;
+        (*lastElem)->prev = NULL;
+        free(*lastElem);
+        *lastElem = prev;
+        prev = NULL;
     }
-    free(*lastElem);
 
     return item;
+}
+
+
+void freeQueue(Queue *queue){
+    if (*queue == NULL){
+        return;
+    }
+    Queue node = *queue;
+    Queue next_node = NULL;
+    while (node != NULL){
+        next_node = node->next;
+        free(node);
+        node = next_node;
+    }
+    *queue = NULL;
+    node = NULL;
+    next_node = NULL;
 }
 
 

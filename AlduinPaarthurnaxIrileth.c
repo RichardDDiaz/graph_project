@@ -14,7 +14,7 @@ u32* Bipartito(Grafo G){
 
     //inicializar coloreo con ERRORGRAFO
     for (u32 i=0; i < NumeroDeVertices(G); i++){
-        Coloreo[i] = ErrorGrafo;
+        Coloreo[i] = 3;
     }
     
     //Coloreamos el primer vertice de orden natural con 1
@@ -26,7 +26,9 @@ u32* Bipartito(Grafo G){
     u32 index = 0;
 
     if (queue == NULL){
-        printf("Error en la coloreacion\n");
+        free(Coloreo);
+        Coloreo = NULL;
+        return NULL;
     }
     while(queue != NULL){
         //sacamos el primer elemento (indice) de la cola
@@ -34,12 +36,11 @@ u32* Bipartito(Grafo G){
         //para cada vecino de indice
         for (u32 i=0; i < Grado(index, G); i++){
             //si el vecino no esta coloreado
-            if (Coloreo[IndiceONVecino(i, index, G)] == ErrorGrafo){
+            if (Coloreo[IndiceONVecino(i, index, G)] == 3){
                 //coloreamos el vecino con el opuesto del coloreo de indice
                 Coloreo[IndiceONVecino(i, index, G)] = Coloreo[index] == 1lu ? 2lu : 1lu;
                 //encolamos el indice del vecino
                 enqueue(&queue, &lastElem, IndiceONVecino(i, index, G));
-                printf("indice: %lu\n", IndiceONVecino(i, index, G));
             }
             else {
                 //si el vecino esta coloreado
@@ -47,11 +48,22 @@ u32* Bipartito(Grafo G){
                 if (Coloreo[index] == Coloreo[IndiceONVecino(i, index, G)]){
                     //no es bipartito
                     //DESTRUIR EL ARREGLO COLOREO Y LA COLA QUE CONTIENE LOS INDICES
+                    free(Coloreo);
+                    freeQueue(&queue);
+                    Coloreo = NULL;
+                    queue = NULL;
+                    lastElem = NULL;
                     return NULL;
                 }
             }
         }
     }
+    if (queue != NULL){
+        freeQueue(&queue);
+        queue = NULL;
+        lastElem = NULL;
+    }
+
     return Coloreo;
 }
 
