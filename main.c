@@ -36,18 +36,6 @@ int main(){
         printf("== fun Numero Lados: %lu ==\n", g->mlados);
         printf("== fun Delta: %lu ==\n", g->delta);
 
-        // imprimir vecinos del vertice 1 en el orden natural
-        printf("== vecinos del vertice 0 en el orden natural ==\n");
-        for (u32 i = 0; i < Grado(0, g); i++) {
-            printf("%lu\n", g->vertices[0]->vecinos[i]->nombrev);
-        }
-        printf("== fin vecinos del vertice 1 en el orden natural ==\n");
-
-        printf("== vecinos del vertice 1 en el orden natural ==\n");
-        for (u32 i = 0; i < Grado(1, g); i++) {
-            printf("%lu\n", g->vertices[1]->vecinos[i]->nombrev);
-        }
-        printf("== fin vecinos del vertice 1 en el orden natural ==\n");
         /*------------------------- BIPARTITO -------------------------------*/ 
         
         u32 * coloreo = NULL;
@@ -59,12 +47,17 @@ int main(){
                 printf("%lu ", coloreo[i]);
             }
             printf("==\n");
+
+            if (bipartito_check(g,coloreo)==1){
+                printf("== Verificado que es Bipartito ==\n");
+            }
+            else{
+                printf("== ERROR: Fallo el Coloreo No Bipartito ==\n");
+            }
             free(coloreo);
         }else{
             printf("== fun Coloreo: NULL ==\n");
         }
-        
-
         /*-------------------------------------------------------------------*/ 
 
 

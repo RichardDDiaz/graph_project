@@ -69,6 +69,58 @@ void freeQueue(Queue *queue){
     next_node = NULL;
 }
 
+u32 coloreoBipartitoConexo(Grafo G, u32 *Coloreo, u32 index){
+    if (G == NULL || Coloreo == NULL || Coloreo[index] != ErrorGrafo){ 
+        return ErrorGrafo;
+    }
+
+    //Coloreamos el vertice i index
+    Coloreo[index] = 1lu;
+    //Encolar el index vertice i en la cola
+    Queue queue = NULL;
+    Queue lastElem = NULL;
+    enqueue(&queue, &lastElem, index);
+
+    if (queue == NULL){
+        //free(Coloreo);
+        //Coloreo = NULL;
+        return ErrorGrafo;
+    }
+    while(queue != NULL){
+        //sacamos el primer elemento (indice) de la cola
+        index = dequeue(&queue, &lastElem);
+        //para cada vecino de indice
+        for (u32 i=0; i < Grado(index, G); i++){
+            //si el vecino no esta coloreado
+            if (Coloreo[IndiceONVecino(i, index, G)] == ErrorGrafo){
+                //coloreamos el vecino con el opuesto del coloreo de indice
+                Coloreo[IndiceONVecino(i, index, G)] = Coloreo[index] == 1lu ? 2lu : 1lu;
+                //encolamos el indice del vecino
+                enqueue(&queue, &lastElem, IndiceONVecino(i, index, G));
+            }
+            else {
+                //si el vecino esta coloreado
+                //si el coloreo de indice es igual al coloreo de vecino
+                if (Coloreo[index] == Coloreo[IndiceONVecino(i, index, G)]){
+                    //no es bipartito
+                    //DESTRUIR EL ARREGLO COLOREO Y LA COLA QUE CONTIENE LOS INDICES
+                    //free(Coloreo);
+                    freeQueue(&queue);
+                    //Coloreo = NULL;
+                    queue = NULL;
+                    lastElem = NULL;
+                    return ErrorGrafo;
+                }
+            }
+        }
+    }
+    if (queue != NULL){
+        freeQueue(&queue);
+        queue = NULL;
+        lastElem = NULL;
+    }
+    return 1lu;
+}
 
 
 int compararTuplas(const void * a, const void * b){
@@ -134,6 +186,40 @@ int ordenfromkey_check(u32 n,u32* key,u32* Orden){
 
                     return 0;
                 }
+        }
+    }
+    return 1;
+}
+
+
+int bipartito_check(Grafo g, u32 * Coloreo){
+    //recorrer cada vertice del grafo g
+    u32 posicionJvecinodeK = 0;
+    for (u32 k=0; k < g->nver; k++){
+        for (u32 j=0; j < g->vertices[k]->gradov; j++){
+            posicionJvecinodeK = IndiceONVecino(j, k, g);
+            if (Coloreo[k] == Coloreo[posicionJvecinodeK]){
+                printf("ERROR-VERTICE Y VECINO CON EL MISMO COLOR\n");
+                printf("Vertice %lu, PostNat: %lu, color: %lu\n",
+                    g->vertices[k]->nombrev, k, Coloreo[k]);
+                printf("Vecino %lu, PostNat: %lu, color: %lu\n",
+                    g->vertices[posicionJvecinodeK]->nombrev, 
+                    posicionJvecinodeK, Coloreo[posicionJvecinodeK]);
+                return 0;
+            }
+            else if (Coloreo[k] != 1 && Coloreo[k] != 2){
+                printf("ERROR-VERTICE CON COLOR NO BIPARTITO\n");
+                printf("Vertice %lu, PostNat: %lu, color: %lu\n",
+                    g->vertices[k]->nombrev, k, Coloreo[k]);
+                return 0;
+            }
+            else if (Coloreo[posicionJvecinodeK] != 1 && Coloreo[posicionJvecinodeK] != 2){
+                printf("ERROR-VERTICE vecino CON COLOR NO BIPARTITO\n");
+                printf("Vertice vecino %lu, PostNat: %lu, color: %lu\n",
+                    g->vertices[posicionJvecinodeK]->nombrev,
+                    posicionJvecinodeK, Coloreo[posicionJvecinodeK]);
+                return 0;
+            }
         }
     }
     return 1;

@@ -32,10 +32,14 @@ u32 dequeue(Queue *queue, Queue *lastElem);
 
 void freeQueue(Queue *queue);
 
+u32 coloreoBipartitoConexo(Grafo G, u32 *Coloreo, u32 index);
+
 
 //return 1 si el coloreo es propio, 0 caso contrario.
 u32 greedy_check(Grafo g, u32 * Coloreo, u32 nColores);
 
 int ordenfromkey_check(u32 n,u32* key,u32* Orden);
+
+int bipartito_check(Grafo g, u32 * Coloreo);
 
 #endif
