@@ -7,7 +7,34 @@
 #include "AlduinPaarthurnaxIrileth.h"
 #define ErrorGrafo 4294967295
 
-//#define RAND_MAX 4294967295
+
+
+u32* Bipartito(Grafo G){ 
+    u32* Coloreo = (u32*)malloc(NumeroDeVertices(G)*sizeof(u32));
+
+    //inicializar coloreo con ERRORGRAFO
+    for (u32 i=0; i < NumeroDeVertices(G); i++){
+        Coloreo[i] = ErrorGrafo;
+    }
+    
+    u32 index = 0;
+    while (index < NumeroDeVertices(G)){
+        if (Coloreo[index] == ErrorGrafo){
+            if (coloreoBipartitoConexo(G, Coloreo, index) != 1){
+                free(Coloreo);
+                return NULL;
+            }
+        }
+        else {
+            index++;
+        }
+    }
+
+    return Coloreo;
+}
+
+
+
 
 /*
 La funcion escribe en el lugar i de Coloreo[] cual es el color que 
@@ -78,18 +105,6 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
         // liberar conjuntoColoresUsados
         free(conjuntoColoresUsados);
     }
-
-    // si tiene 2 colores, bipartito
-    if (nColores == 2lu){
-        // si solo hay dos colores, creeremos que es greedy y que solo uso
-        // los colores 0 y 1 para los vertices
-        // cambiar los colores de 0 por 2 y los de 1 por 0 del arreglo coloreo
-        for(u32 i = 0; i < NumeroDeVertices(G); i++){
-            if (Coloreo[i] == 0){Coloreo[i] = 2;}
-            else if (Coloreo[i] == 1){Coloreo[i] = 0;}
-        }
-    }
-
     conjuntoColoresUsados = NULL;
     return nColores;
 }
