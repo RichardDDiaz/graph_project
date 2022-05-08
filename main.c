@@ -38,25 +38,19 @@ int main(){
 
         /*------------------------- BIPARTITO -------------------------------*/ 
         
-        u32 * coloreo = NULL;
+        u32 * coloreoB = NULL;
 
-        coloreo = Bipartito(g);
-        if(coloreo!=NULL){
-            printf("== fun Coloreo: ");
-            for(u32 i=0; i<g->nver; i++){
-                printf("%lu ", coloreo[i]);
-            }
-            printf("==\n");
-
-            if (bipartito_check(g,coloreo)==1){
+        coloreoB = Bipartito(g);
+        if(coloreoB!=NULL){
+            if (bipartito_check(g,coloreoB)==1){
                 printf("== Verificado que es Bipartito ==\n");
             }
             else{
-                printf("== ERROR: Fallo el Coloreo No Bipartito ==\n");
+                printf("== ERROR: Fallo el ColoreoB No Bipartito ==\n");
             }
-            free(coloreo);
+            free(coloreoB);
         }else{
-            printf("== fun Coloreo: NULL ==\n");
+            printf("== fun ColoreoB: NULL ==\n");
         }
         /*-------------------------------------------------------------------*/ 
 
@@ -90,8 +84,7 @@ int main(){
     
 
         // Verificar el coloreo de greedy sea propio
-        //if(greedy_check(g, coloreo, nColores)){
-            if(true){
+        if(greedy_check(g, coloreo, nColores)){
             printf("== fun Greedy: OK ==\n");
         }
         else{

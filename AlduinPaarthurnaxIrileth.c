@@ -105,18 +105,6 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
         // liberar conjuntoColoresUsados
         free(conjuntoColoresUsados);
     }
-
-    // si tiene 2 colores, bipartito
-    if (nColores == 2lu){
-        // si solo hay dos colores, creeremos que es greedy y que solo uso
-        // los colores 0 y 1 para los vertices
-        // cambiar los colores de 0 por 2 y los de 1 por 0 del arreglo coloreo
-        for(u32 i = 0; i < NumeroDeVertices(G); i++){
-            if (Coloreo[i] == 0){Coloreo[i] = 2;}
-            else if (Coloreo[i] == 1){Coloreo[i] = 0;}
-        }
-    }
-
     conjuntoColoresUsados = NULL;
     return nColores;
 }
