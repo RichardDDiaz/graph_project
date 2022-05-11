@@ -117,7 +117,7 @@ u32 buscarColor(u32 * colorNat, u32 i,u32 * control, u32 cantColor){
 
 
 
-// Permuta cada color de ColoreoNuevo por uno de Coloreo de manera pseudo-aleatoria con 
+// Permuta cada color de coloreoNuevo por uno de Coloreo de manera pseudo-aleatoria con 
 // la semilla R.
 u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
     u32 cantColores = 0;
@@ -127,7 +127,7 @@ u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
     colorNat[cantColores] = 0;
 
     // copiamos coloreo
-    u32 * ColoreoNuevo = malloc(n * sizeof(u32));
+    u32 * coloreoNuevo = malloc(sizeof(u32)*n);
     for(u32 i=0; i<n; i++){
         // actualizamos la cantidad de colores
         if(cantColores <  (Coloreo[i])){
@@ -137,7 +137,7 @@ u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
             colorNat = realloc(colorNat, sizeof(u32) * (cantColores+1));
             colorNat[cantColores] = cantColores;
         }
-        ColoreoNuevo[i] = Coloreo[i];
+        coloreoNuevo[i] = Coloreo[i];
     }
 
     // +1 para obtener la cantidad de colores total
@@ -145,14 +145,17 @@ u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
 
     // Establecer arrays de aleatoriedad con semilla R
     // keyColor obtendra la posición en que se consultara las celdas de colorNat
-    u32 * keysColor = malloc(cantColores * sizeof(u32));
+    u32 * keysColor = malloc(sizeof(u32)*cantColores);
     AleatorizarKeys(cantColores,R,keysColor);
 
     // controlColor: 0=color disponible en array colorNat; 1=color no disponible
-    u32 * controlColor = malloc(cantColores * sizeof(u32));
+    u32 * controlColor = malloc(sizeof(u32)*cantColores);
     // perColor: resultado de la biyección de permutar los colorNat
-    u32 * perColor = malloc(cantColores * sizeof(u32));
-    //u32 jColor = 0;
+    u32 * perColor = malloc(sizeof(u32)*cantColores);
+    for(u32 i=0; i< cantColores; i++){
+        perColor[i] = 0;
+        controlColor[i] = 0;
+    }
 
     // Permutar los colores
     for(u32 i=0; i<cantColores; i++){
@@ -163,13 +166,15 @@ u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
     for(u32 i=0; i<cantColores; i++){
         printf(",%lu ", perColor[i]);
     }
+
+    // Liberar los arreglos
+    free(colorNat);
+    colorNat = NULL;
+    free(coloreoNuevo);
+    coloreoNuevo = NULL;
+    free(keysColor);
+    keysColor = NULL;
     
-    return ColoreoNuevo;
+    return coloreoNuevo;
 
 }
-
-
-// casos permutar colores:
-/* 
-  -chequear si colorNat no hace violación de segmento
-*/

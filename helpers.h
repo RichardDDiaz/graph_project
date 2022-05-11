@@ -7,4 +7,6 @@
 //return 1 si el coloreo es propio, 0 caso contrario.
 u32 greedy_check(Grafo g, u32 * Coloreo, u32 nColores);
 
+u32 permutarColores_cheeck(u32 * Coloreo, u32 * NuevoColoreo, u32 n);
+
 #endif
