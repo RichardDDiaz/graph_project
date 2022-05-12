@@ -258,3 +258,95 @@ u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
     return coloreoNuevo;
 
 }
+
+
+// Compara la cantidad de colores de mayor a menor
+int cmpNColor (const void * a, const void * b){
+  //Vertice al =*((Vertice*)a);
+  //Vertice bl =*((Vertice*)b);
+
+  u32 al =*((u32*)a);
+  u32 bl =*((u32*)b);
+
+  if (al < bl){
+    return 1;
+  }
+
+  if (al > bl){
+    return -1;
+  }else{
+    return 0;
+  }
+}
+
+
+u32* RecoloreoCardinalidadDecrecienteBC(u32 n,u32* Coloreo){
+    printf("RecoloreoCardinalidadDecrecienteBC \n");
+    //u32 * nColores = malloc(sizeof(u32));
+    Tuple * nColores = malloc(sizeof(Tuple));
+    if (nColores == NULL){return NULL;}
+    // v1 = cantidad del color
+    // v2 = color
+    nColores[0] = malloc(sizeof(struct _Tuple));
+    nColores[0]->v1 = 0; //cantidad del color
+    nColores[0]->v2 = 0; //color
+
+    //nColores[0]->v1 = 1;
+    //nColores[0]->v2 = 0;
+
+    u32 cantColores = 0;
+
+    // Sumamos las veces que aparece cada color
+    printf("Recoloreo for \n");
+    for(u32 i=0; i<n; i++){
+        // Si encontramos un color nuevo
+        printf("Recoloreo for-in \n");
+        if(cantColores < Coloreo[i]){
+            printf("Recoloreo for-add color \n");
+            // agrandamos el arreglo de colores
+            nColores = realloc(nColores, sizeof(Tuple)*(Coloreo[i]+1));
+
+            // seteamos en 1 el resto de colores
+            for(u32 j=(cantColores +1); j<(Coloreo[i]+1);j++){
+                printf("Recoloreo for-add color - for \n");
+                nColores[j] = malloc(sizeof(struct _Tuple));
+                if(nColores == NULL){return NULL;}
+                printf("Recoloreo for-add color - for - vn \n");
+                nColores[j]->v1=0; // cantidad del color
+                nColores[j]->v2=j; // color
+            }
+            cantColores = Coloreo[i];
+        }
+        // Sumamos 1 al color encontrado si 
+        nColores[Coloreo[i]]->v1 += 1;
+    }
+
+    // agregamos uno por la cantidad total de colores
+    cantColores +=1;
+
+    // Ordenamos nColores de mayor a menor
+    printf("Recoloreo qsort \n");
+    qsort(nColores, cantColores, sizeof(Tuple), compararTuplas);
+
+    printf("Recoloreo for \n");
+    printf("Recoloreo cantColores:%lu \n", cantColores);
+    for(u32 i=0; i<cantColores;i++){
+        printf("i %lu ; cant %lu ; color %lu\n", i, nColores[i]->v1, nColores[i]->v2);
+    }
+
+
+    u32 * NuevoColoreo = malloc(sizeof(u32)*n);
+    u32 colorInx = 0;
+    u32 index = 0;
+    // Seteamos el nuevo coloreo
+    for(u32 i=0; i<cantColores;i++){
+        colorInx = nColores[i]->v1;
+        for(u32 j=index;j<(index + colorInx); j++)
+        {
+            NuevoColoreo[j]=nColores[i]->v2;
+        }
+        index += colorInx;
+    }
+    
+    return NuevoColoreo;
+}

@@ -21,8 +21,42 @@ int main(){
     # Debe ser un algoritmo que demore un tiempo razonable.
     */
 
+    
+
+    Grafo g = ConstruccionDelGrafo();
+    if(g!=NULL){
+        printf("== fun Numero Vertices: %lu ==\n", g->nver);
+        printf("== fun Numero Lados: %lu ==\n", g->mlados);
+        printf("== fun Delta: %lu ==\n", g->delta);
+    }
+    else{
+        printf("\n No se pudo construir el grafo. \n");
+        return 0;
+    }
+
+    u32 * orden = malloc(g->nver * sizeof(u32));
+        for(u32 i = 0; i < g->nver; i++){orden[i] = i;}
+    u32 * coloreo = malloc(g->nver * sizeof(u32));
+    u32 nColores = 0;
+    nColores = Greedy(g, orden, coloreo);
+
+    printf("Coloreo for \n");
+    for(u32 i=0; i<g->nver;i++){
+        printf("i: %lu ; coloreo: %lu \n", i, coloreo[i]);
+    }
+
+    u32 * RCD_array =RecoloreoCardinalidadDecrecienteBC(g->nver,coloreo);
+
+    printf("main RCD %lu \n nColores %lu \n", *RCD_array, nColores);
+    for(u32 i=0; i<g->nver;i++){
+        printf("i: %lu ; color %lu \n", i, RCD_array[i]);
+    }
+
+
+
     /*------------------------- PermutarColores -------------------------------*/
     // Caso básico
+    /*
     u32 n = 5;
     u32 R = 105;
     u32 * Coloreo = malloc(sizeof(u32) * 5);
@@ -42,7 +76,7 @@ int main(){
     else{
         printf("== PermutarColores: ERROR ==\n");
     }
-
+*/
 
     /*-------------------------------------------------------*/
 

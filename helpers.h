@@ -21,6 +21,7 @@ struct _Queue{
 
 typedef struct _Queue * Queue;
 
+
 //funcion para ser usada por qsort:
 // compara los valores v1 y v2 de los tuplas 
 // para ordenarlas de mayor a menor
@@ -44,5 +45,8 @@ int ordenfromkey_check(u32 n,u32* key,u32* Orden);
 int bipartito_check(Grafo g, u32 * Coloreo);
 
 u32 permutarColores_cheeck(u32 * Coloreo, u32 * NuevoColoreo, u32 n);
+
+// comparación para RecoloreoCardinalidadDecrecienteBC
+int cmpNColor (const void * a, const void * b);
 
 #endif
