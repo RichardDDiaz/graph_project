@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <time.h> 
 
 #include "helpers.h"
 #include "AlduinPaarthurnaxIrileth.h"
 #define ErrorGrafo 4294967295
-
 
 
 u32* Bipartito(Grafo G){ 
@@ -32,7 +30,6 @@ u32* Bipartito(Grafo G){
 
     return Coloreo;
 }
-
 
 
 
@@ -157,49 +154,107 @@ char OrdenFromKey(u32 n,u32* key,u32* Orden){
 }
 
 
-//#include <stdint.h>
 
-/* These state variables must be initialised so that they are not all zero. */
-//uint32_t w, x, y, z;
-/*
-u32 w, x, y, z;
-x = 0; y = 10; w=3; z=7;
-
-
-//uint32_t xorshift128(void) 
-u32 xorshift128(void) 
-{
-    //uint32_t t = x;
-    u32 t = x;
-    t ^= t << 11U;
-    t ^= t >> 8U;
-    x = y; y = z; z = w;
-    w ^= w >> 19U;
-    w ^= t;
-    return w;
-}
-*/
-
+// Setea cada posición de key con un nuevo valor aleatorio usando la semilla R
 void AleatorizarKeys(u32 n,u32 R,u32* key){
-    printf("\n R: %lu \n",R);
-
     u32 ra1= rand();
     u32 ra2= rand();
     u32 ra3 = 0;
     
     for(u32 i=0; i<n; i++){
+        // seteamos la semilla R
         srand(R+i);
+        // Obtenemos los numeros random
         ra1= (u32)rand() +1;
         ra2= (u32)rand();
         ra3 = (u32)(ra1 + ra2);
         key[i] = ra3 % n;
-        
     }
-    printf("\n[");
+}
+
+// retorna el color i de ColorNat si esta disponible y actualiza el color
+// a utilizar en control, si no esta disponible iteramos por Coloreo hasta encontrar uno.
+// control[k]==1 color usado; control[k]==0 color
+//u32 buscarColor(u32 * control, u32 i, u32 * colorNat, u32 cantColor){
+u32 buscarColor(u32 * colorNat, u32 i,u32 * control, u32 cantColor){
+    // retornamos el color disponible
+    if(control[i]==0){
+        control[i] = 1;
+        return colorNat[i];
+    }
+    // buscamos linealmente uno disponible
+    else{
+        u32 j = i;
+        do{
+            j = (j+1) % cantColor;
+        }while(control[j] == 1);
+        // seteamos el color a usar en 1 "no usable"
+        control[j] = 1;
+        // retornamos color encontrado disponible
+        return (colorNat[j]);
+    }
+}
+
+
+
+// Permuta cada color de coloreoNuevo por uno de Coloreo de manera pseudo-aleatoria con 
+// la semilla R.
+u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
+    u32 cantColores = 0;
+
+    // colores en orden natural
+    u32 * colorNat = malloc(sizeof(u32));
+    colorNat[cantColores] = 0;
+
+    // copiamos coloreo
+    u32 * coloreoNuevo = malloc(sizeof(u32)*n);
     for(u32 i=0; i<n; i++){
-        
-        printf(", %lu",key[i]);
-        
+        // actualizamos la cantidad de colores
+        if(cantColores <  (Coloreo[i])){
+            cantColores = Coloreo[i];
+
+            // agregamos un nuevo color en orden natural
+            colorNat = realloc(colorNat, sizeof(u32) * (cantColores+1));
+            colorNat[cantColores] = cantColores;
+        }
+        coloreoNuevo[i] = Coloreo[i];
     }
-    printf("]\n");
+
+    // +1 para obtener la cantidad de colores total
+    cantColores += 1;
+
+    // Establecer arrays de aleatoriedad con semilla R
+    // keyColor obtendra la posición en que se consultara las celdas de colorNat
+    u32 * keysColor = malloc(sizeof(u32)*cantColores);
+    AleatorizarKeys(cantColores,R,keysColor);
+
+    // controlColor: 0=color disponible en array colorNat; 1=color no disponible
+    u32 * controlColor = malloc(sizeof(u32)*cantColores);
+    // perColor: resultado de la biyección de permutar los colorNat
+    u32 * perColor = malloc(sizeof(u32)*cantColores);
+    for(u32 i=0; i< cantColores; i++){
+        perColor[i] = 0;
+        controlColor[i] = 0;
+    }
+
+    // Permutar los colores
+    for(u32 i=0; i<cantColores; i++){
+        // buscamos el color disponible
+        perColor[i] = buscarColor(colorNat, keysColor[i],controlColor, cantColores);
+    }
+    printf("\n Colores Permutados:");
+    for(u32 i=0; i<cantColores; i++){
+        printf(",%lu ", perColor[i]);
+    }
+
+    // Liberar los arreglos
+    free(colorNat);
+    colorNat = NULL;
+    free(coloreoNuevo);
+    coloreoNuevo = NULL;
+    free(keysColor);
+    keysColor = NULL;
+    
+    return coloreoNuevo;
+
 }

@@ -12,7 +12,8 @@
 
 int main(){
     printf("Proyecto GRAFO iniciado");
-    
+
+
     /*------------------------- ALEATORIZAR KEYS -------------------------------*/ 
     /*
     Nota: Retorna numeros aleatorios, requiere mejorar la función ya que solo retorna 
@@ -20,6 +21,7 @@ int main(){
     Es decir: Si con R generamos los [0,n] numeros aleatorios, con R+1 generara 
     los [1,n+1] numeros siguientes de la secuencia.
     */
+
     //u32 n = 10u;
     //u32 * key = malloc(sizeof(int)*10);
     //for(u32 i=0; i<n;i++){
@@ -28,8 +30,36 @@ int main(){
     //u32 R = 10u;
     //AleatorizarKeys(n,R,key);
     //free(key);
+
+   /*
+    u32 n = 10u;
+    u32 * key = malloc(sizeof(int)*10);
+    for(u32 i=0; i<n;i++){
+        //key[i] = 0;
+    }
+    u32 R = 10u;
+    AleatorizarKeys(n,R,key);
+    free(key);
+    */
+
     /*--------------------------------------------------------*/ 
 
+
+    /*------------------------- PermutarColores -------------------------------*/
+    u32 n = 5;
+    u32 R = 105;
+    u32 * Coloreo = malloc(sizeof(u32) * 5);
+
+    Coloreo[0] = 0;
+    Coloreo[1] = 1;
+    Coloreo[2] = 2;
+    Coloreo[3] = 3;
+    Coloreo[4] = 4;
+
+    PermutarColores(n,Coloreo,R);
+
+
+    /*-------------------------------------------------------*/
     Grafo g = ConstruccionDelGrafo();
     if(g!=NULL){
         printf("== fun Numero Vertices: %lu ==\n", g->nver);
@@ -57,9 +87,12 @@ int main(){
 
 
         /*------------------------- GREEDY -------------------------------*/ 
-        /*
+        
         clock_t tgreedy_init, tgreedy_end;
         double duration;
+
+        /*------------------------- GREEDY -------------------------------*/
+
         // crear arreglo orden e inicializar con los indices de los vertices
         u32 * orden = malloc(g->nver * sizeof(u32));
         for(u32 i = 0; i < g->nver; i++){orden[i] = i;}
