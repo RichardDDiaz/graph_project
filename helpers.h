@@ -46,7 +46,6 @@ int bipartito_check(Grafo g, u32 * Coloreo);
 
 u32 permutarColores_cheeck(u32 * Coloreo, u32 * NuevoColoreo, u32 n);
 
-// comparación para RecoloreoCardinalidadDecrecienteBC
-int cmpNColor (const void * a, const void * b);
+u32 RecoloreoCardinalidadDecrecienteBC_check(u32 n,u32* Coloreo, u32* NuevoColoreo);
 
 #endif

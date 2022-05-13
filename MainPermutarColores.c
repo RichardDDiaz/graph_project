@@ -45,31 +45,13 @@ int main(){
         printf("i: %lu ; coloreo: %lu \n", i, coloreo[i]);
     }
 
-    u32 * RCD_array =RecoloreoCardinalidadDecrecienteBC(g->nver,coloreo);
-
-    printf("main RCD %lu \n nColores %lu \n", *RCD_array, nColores);
-    for(u32 i=0; i<g->nver;i++){
-        printf("i: %lu ; color %lu \n", i, RCD_array[i]);
-    }
-
-
 
     /*------------------------- PermutarColores -------------------------------*/
     // Caso básico
-    /*
-    u32 n = 5;
-    u32 R = 105;
-    u32 * Coloreo = malloc(sizeof(u32) * 5);
-
-    Coloreo[0] = 0;
-    Coloreo[1] = 1;
-    Coloreo[2] = 2;
-    Coloreo[3] = 3;
-    Coloreo[4] = 4;
 
     printf("Permutar colores:\n");
-    u32 * NuevoColoreo = PermutarColores(n,Coloreo,R);
-    u32 result = permutarColores_cheeck(Coloreo, NuevoColoreo, n);
+    u32 * NuevoColoreo = PermutarColores(n,coloreo,R);
+    u32 result = permutarColores_cheeck(coloreo, NuevoColoreo, n);
     if(result == 1){
         printf("== PermutarColores: OK ==\n");
     }

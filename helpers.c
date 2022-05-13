@@ -276,3 +276,91 @@ u32 permutarColores_cheeck(u32 * Coloreo, u32 * NuevoColoreo, u32 n){
     printf("Permutar colores exitoso\n");
     return 1;
 }
+
+
+
+// Suma la cantidad de veces que aparece cada color
+Tuple * SumaRepeticionesColor(u32 n, u32 * Coloreo, u32 *cantColores){
+    Tuple * nColores = malloc(sizeof(Tuple));
+    if (nColores == NULL){return NULL;}
+    nColores[0] = malloc(sizeof(struct _Tuple));
+    if (nColores[0] == NULL){return NULL;}
+    nColores[0]->v1 = 0; //cantidad del color
+    nColores[0]->v2 = 0; //color
+
+    *cantColores = 0;
+
+    // Sumamos las veces que aparece cada color
+    for(u32 i=0; i<n; i++){
+        // Si encontramos un color nuevo
+        if(*cantColores < Coloreo[i]){
+            // agrandamos el arreglo de colores
+            nColores = realloc(nColores, sizeof(Tuple)*(Coloreo[i]+1));
+
+            // seteamos en 0 el resto de colores
+            for(u32 j=(*cantColores +1); j<(Coloreo[i]+1);j++){
+                nColores[j] = malloc(sizeof(struct _Tuple));
+                if(nColores == NULL){return NULL;}
+                nColores[j]->v1=0; // cantidad del color
+                nColores[j]->v2=j; // color
+            }
+            *cantColores = Coloreo[i];
+        }
+        // Sumamos 1 al color encontrado si 
+        nColores[Coloreo[i]]->v1 += 1;
+    }
+
+    // agregamos uno por la cantidad total de colores
+    *cantColores +=1;
+    // nColores en orden natural
+    return nColores;
+}
+
+
+
+// Verifica que el recoloreo se correcto
+u32 RecoloreoCardinalidadDecrecienteBC_check(u32 n,u32* Coloreo, u32* NuevoColoreo){
+    // Contar las repiticiones de cada color en Coloreo, guardando en array ReptColor
+    u32 cantColores = 0;
+    // ReptColor contiene la repetición de cada color
+    Tuple * ReptColor = SumaRepeticionesColor(n, Coloreo, &cantColores);
+    //printf("cantColor: %lu \n",cantColores);
+
+    /*
+    for(u32 i=0;i<cantColores;i++){
+        printf("color: %lu; cant: %lu \n", ReptColor[i]->v2, ReptColor[i]->v1);
+    }
+    */
+
+    // Iterar NuevoColoreo restando las veces que aparece un color en ReptColor
+    for(u32 i=0; i<n; i++){
+        ReptColor[NuevoColoreo[i]]->v1 += -1; 
+    }
+
+
+    // Verificar que ReptColor tenga todas sus celdas en cero
+    for(u32 i=0; i<cantColores; i++){
+        if(ReptColor[i]->v1 != 0){
+            printf("ERROR: Hay colores de menos\n");
+            printf("Color: %lu, Cantidad: %lu \n", ReptColor[i]->v2, ReptColor[i]->v1);
+            // Liberamos espacios
+            for(u32 i=0; i<cantColores; i++){
+                free(ReptColor[i]);
+                ReptColor[i] = NULL;
+            }
+            free(ReptColor);
+            ReptColor = NULL;
+            return 0;
+        }
+    }
+
+    // Liberamos los arrays usados
+    for(u32 i=0; i<cantColores; i++){
+        free(ReptColor[i]);
+        ReptColor[i] = NULL;
+    }
+    free(ReptColor);
+    ReptColor = NULL;
+
+    return 1;
+}
