@@ -242,18 +242,16 @@ u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
         // buscamos el color disponible
         perColor[i] = buscarColor(colorNat, keysColor[i],controlColor, cantColores);
     }
-    printf("\n Colores Permutados:");
-    for(u32 i=0; i<cantColores; i++){
-        printf(",%lu ", perColor[i]);
-    }
 
     // Liberar los arreglos
     free(colorNat);
     colorNat = NULL;
-    free(coloreoNuevo);
-    coloreoNuevo = NULL;
     free(keysColor);
     keysColor = NULL;
+    free(controlColor);
+    controlColor =NULL;
+    free(perColor);
+    perColor = NULL;
     
     return coloreoNuevo;
 
