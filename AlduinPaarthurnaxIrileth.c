@@ -126,7 +126,7 @@ u32 Greedy(Grafo G,u32* Orden,u32* Coloreo){
 char OrdenFromKey(u32 n,u32* key,u32* Orden){
     // crear arreglo de Tuple con malloc
     Tuple * arregloTuplas = malloc(n*sizeof(Tuple));
-    if (arregloTuplas == NULL){return '1';}
+    if (arregloTuplas == NULL){return 1;}
     // llenar arregloTuplas con los valores de key en v1 e indices en v2
     for(u32 i = 0; i < n; i++){
         arregloTuplas[i] = malloc(sizeof(struct _Tuple));
@@ -150,7 +150,7 @@ char OrdenFromKey(u32 n,u32* key,u32* Orden){
     }
     free(arregloTuplas);
     arregloTuplas = NULL;
-    return '0';
+    return 0;
 }
 
 

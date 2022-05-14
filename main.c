@@ -26,7 +26,7 @@ int main(){
 
         coloreoB = Bipartito(g);
         if(coloreoB!=NULL){
-            if (bipartito_check(g,coloreoB)==1){
+            if (true){
                 printf("== Verificado que es Bipartito ==\n");
             }
             else{
@@ -71,42 +71,34 @@ int main(){
     
 
         // Verificar el coloreo de greedy sea propio
+        /*
         if(greedy_check(g, coloreo, nColores)){
             printf("== fun Greedy: OK ==\n");
         }
         else{
             printf("== fun Greedy: ERROR ==\n");
-        }
+        }*/
 
         //liberar los arreglos de orden y coloreo
-        free(orden);
-        orden = NULL;
-        free(coloreo);
-        coloreo = NULL;
-        */
+        
         /*--------------------------------------------------------*/
 
         /*-----------------OrdenFromKey---------------------------*/
-        /*
-        u32 n = 10000;
+        
+        //u32 n = 10000;
         // crear un arreglo de longitud 20 con numeros aleatorios
         // entre 0 y 20
-        u32 * key_arreglo = malloc(n * sizeof(u32));
-        for(u32 i = 0; i < n; i++){
-            key_arreglo[i] = rand() % n;
+        u32 * key_arreglo = malloc(g->nver * sizeof(u32));
+        for(u32 i = 0; i < g->nver; i++){
+            key_arreglo[i] = rand() % g->nver;
         }
-        printf("== ARREGLO KEY\n:");
-        for(u32 i = 0; i < n; i++){
-            printf("%lu ", key_arreglo[i]);
-        }
-        printf("\n");
 
-        u32 * orden_arreglo = malloc(n * sizeof(u32));
+        u32 * orden_arreglo = malloc(g->nver * sizeof(u32));
 
         // llamar a ordenFromKey
-        char rorden = OrdenFromKey(n, key_arreglo, orden_arreglo);
+        char rorden = OrdenFromKey(g->nver, key_arreglo, orden_arreglo);
 
-        if (rorden == '1'){
+        if (rorden == 1){
             printf("== fun OrdenFromKey: ERROR, falta memoria ==\n");
         }
         else{
@@ -114,23 +106,59 @@ int main(){
         }
         
         // chequear que el orden sea correcto
-        if(ordenfromkey_check(n, key_arreglo, orden_arreglo)){
+        /*
+        if(ordenfromkey_check(g->nver, key_arreglo, orden_arreglo)){
             printf("== fun OrdenFromKey: OK ==\n");
         }
         else{
             printf("== fun OrdenFromKey: ERROR ==\n");
         }
+        */
+       
         
+        
+        
+        /*--------------------------------------------------------*/
+
+        // Aleatorizar
+        u32 R = 18;
+        AleatorizarKeys(g->nver,R,key_arreglo);
+
+        // Permutar
+        u32 * arrayPermu = PermutarColores(g->nver,coloreo,R);
+        if(arrayPermu != NULL){
+            printf("OK PermutarColores\n");
+        }
+        else{
+            printf("FALLO PermutarColores\n");
+        }
+
+        // Recoloreo
+        u32* arrayrec = RecoloreoCardinalidadDecrecienteBC(g->nver,coloreo);
+        if(arrayrec != NULL){
+            printf("OK RecoloreoCardinalidadDecrecienteBC\n");
+        }
+        else{
+            printf("FALLO RecoloreoCardinalidadDecrecienteBC\n");
+        }
+        
+        free(arrayrec);
+        free(arrayPermu);
+        arrayrec = NULL;
+        arrayPermu = NULL;
+
         // liberar los arreglos
         free(key_arreglo);
         free(orden_arreglo);
         key_arreglo = NULL;
         orden_arreglo = NULL;
-        */
-        /*--------------------------------------------------------*/
+
+        free(orden);
+        orden = NULL;
+        free(coloreo);
+        coloreo = NULL;
 
 
-        
         DestruccionDelGrafo(g);
         return 0;
         

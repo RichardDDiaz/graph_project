@@ -138,7 +138,7 @@ int compararTuplas(const void * a, const void * b){
     }
 }
 
-
+/*
 u32 greedy_check(Grafo g, u32 * Coloreo, u32 nColores){
     //recorrer cada vertice del grafo g
     u32 posicionJvecinodeK = 0;
@@ -171,12 +171,13 @@ u32 greedy_check(Grafo g, u32 * Coloreo, u32 nColores){
     }
     return 1;
 }
-
+*/
 
 
 /* Es decir, da un orden de los indices tal que Orden[i]6=Orden[j] si i 6= j y tal que:
 key[Orden[0]] ≥ key[Orden[1]] ≥ key[Orden[2]] ≥ .... ≥ key[Orden[n-1]]
 */
+/*
 int ordenfromkey_check(u32 n,u32* key,u32* Orden){
     for (u32 i=0; i < n; i++){
         for (u32 j=i+1; j < n; j++){
@@ -191,8 +192,9 @@ int ordenfromkey_check(u32 n,u32* key,u32* Orden){
     }
     return 1;
 }
+*/
 
-
+/*
 int bipartito_check(Grafo g, u32 * Coloreo){
     //recorrer cada vertice del grafo g
     u32 posicionJvecinodeK = 0;
@@ -228,11 +230,12 @@ int bipartito_check(Grafo g, u32 * Coloreo){
     }
     return 0;
 }
-
+*/
 
 // reviso uno a uno que los colores respeten la biyección de PermutarColores
 // return 1 si la permutación de colores es correcta.
 // return 0 si hubo algun error en la permutación
+/*
 u32 permutarColores_cheeck(u32 * Coloreo, u32 * NuevoColoreo, u32 n){
     // coloresPermutados representara la biyección: la posición del array 
     // representara el color en Coloreo y el valor de la posición el color permutado
@@ -271,9 +274,9 @@ u32 permutarColores_cheeck(u32 * Coloreo, u32 * NuevoColoreo, u32 n){
     coloresPermutados = NULL;
     return 1;
 }
+*/
 
-
-
+/*
 // Suma la cantidad de veces que aparece cada color
 Tuple * SumaRepeticionesColor(u32 n, u32 * Coloreo, u32 *cantColores){
     Tuple * nColores = malloc(sizeof(Tuple));
@@ -310,9 +313,9 @@ Tuple * SumaRepeticionesColor(u32 n, u32 * Coloreo, u32 *cantColores){
     // nColores en orden natural
     return nColores;
 }
+*/
 
-
-
+/*
 // Verifica que el recoloreo se correcto
 u32 RecoloreoCardinalidadDecrecienteBC_check(u32 n,u32* Coloreo, u32* NuevoColoreo){
     // Contar las repiticiones de cada color en Coloreo, guardando en array ReptColor
@@ -320,12 +323,6 @@ u32 RecoloreoCardinalidadDecrecienteBC_check(u32 n,u32* Coloreo, u32* NuevoColor
     // ReptColor contiene la repetición de cada color
     Tuple * ReptColor = SumaRepeticionesColor(n, Coloreo, &cantColores);
     //printf("cantColor: %lu \n",cantColores);
-
-    /*
-    for(u32 i=0;i<cantColores;i++){
-        printf("color: %lu; cant: %lu \n", ReptColor[i]->v2, ReptColor[i]->v1);
-    }
-    */
 
     // Iterar NuevoColoreo restando las veces que aparece un color en ReptColor
     for(u32 i=0; i<n; i++){
@@ -359,3 +356,4 @@ u32 RecoloreoCardinalidadDecrecienteBC_check(u32 n,u32* Coloreo, u32* NuevoColor
 
     return 1;
 }
+*/
