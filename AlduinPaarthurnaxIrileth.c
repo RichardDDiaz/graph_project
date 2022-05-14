@@ -273,7 +273,6 @@ u32* RecoloreoCardinalidadDecrecienteBC(u32 n,u32* Coloreo){
     nColores[0]->v2 = 0; //color
 
     u32 cantColores = 0;
-
     // Sumamos las veces que aparece cada color
     for(u32 i=0; i<n; i++){
         // Si encontramos un color nuevo
@@ -283,8 +282,6 @@ u32* RecoloreoCardinalidadDecrecienteBC(u32 n,u32* Coloreo){
 
             // seteamos en 0 el resto de colores
             for(u32 j=(cantColores +1); j<(Coloreo[i]+1);j++){
-                // Error por realloc
-                if(nColores[j] == NULL){return NULL;}
                 nColores[j] = malloc(sizeof(struct _Tuple));
                 if(nColores[j] == NULL){return NULL;}
                 // Agregamos los nuevos colores entre el ultimo agregado y el nuevo encontrado
