@@ -266,9 +266,15 @@ u32* PermutarColores(u32 n,u32* Coloreo,u32 R){
 */
 u32* RecoloreoCardinalidadDecrecienteBC(u32 n,u32* Coloreo){
     Tuple * nColores = malloc(sizeof(Tuple));
-    if (nColores == NULL){return NULL;}
+    if (nColores == NULL){
+        return NULL;
+    }
     nColores[0] = malloc(sizeof(struct _Tuple));
-    if (nColores[0] == NULL){return NULL;}
+    if (nColores[0] == NULL){
+        free(nColores);
+        nColores = NULL;
+        return NULL;
+    }
     nColores[0]->v1 = 0; //cantidad del color
     nColores[0]->v2 = 0; //color
 
@@ -283,7 +289,9 @@ u32* RecoloreoCardinalidadDecrecienteBC(u32 n,u32* Coloreo){
             // seteamos en 0 el resto de colores
             for(u32 j=(cantColores +1); j<(Coloreo[i]+1);j++){
                 nColores[j] = malloc(sizeof(struct _Tuple));
-                if(nColores[j] == NULL){return NULL;}
+                if(nColores[j] == NULL){
+                    return NULL;
+                    }
                 // Agregamos los nuevos colores entre el ultimo agregado y el nuevo encontrado
                 nColores[j]->v1=0; // cantidad del color
                 nColores[j]->v2=j; // color
@@ -299,7 +307,6 @@ u32* RecoloreoCardinalidadDecrecienteBC(u32 n,u32* Coloreo){
 
     // Ordenamos nColores de mayor a menor
     qsort(nColores, cantColores, sizeof(Tuple), compararTuplas);
-
     u32 * NuevoColoreo = malloc(sizeof(u32)*n);
     if(NuevoColoreo == NULL){return NULL;}
 
@@ -314,6 +321,7 @@ u32* RecoloreoCardinalidadDecrecienteBC(u32 n,u32* Coloreo){
         }
         index += colorInx;
     }
+
 
     // Liberamos los arrays usados
     for(u32 i=0; i<cantColores; i++){

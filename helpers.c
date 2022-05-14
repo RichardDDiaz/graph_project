@@ -334,7 +334,7 @@ u32 RecoloreoCardinalidadDecrecienteBC_check(u32 n,u32* Coloreo, u32* NuevoColor
 
     // Iterar NuevoColoreo restando las veces que aparece un color en ReptColor
     for(u32 i=0; i<n; i++){
-        ReptColor[NuevoColoreo[i]]->v1 += -1; 
+        ReptColor[NuevoColoreo[i]]->v1 -= 1; 
     }
 
 

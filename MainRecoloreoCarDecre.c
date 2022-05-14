@@ -57,6 +57,8 @@ int main(){
         printf("ERROR: RecoloreoCardinalidadDecrecienteBC - Coloreo basico \n");
         return 0;
     }
+    free(RCD_array);
+    RCD_array = NULL;
 
     /* CASOS DE PRUEBA 02 */
     // Velocidad de Recoloreo y Greedy
@@ -64,6 +66,9 @@ int main(){
     for (u32 i = 0; i < 1000; i++){
         //nColores = Greedy(g, orden, coloreo);
         RCD_array =RecoloreoCardinalidadDecrecienteBC(g->nver,coloreo);
+        free(RCD_array);
+        RCD_array = NULL;
+        
     }
     trecade_end = clock();
     duration = (double)(trecade_end - trecade_init ) / CLOCKS_PER_SEC;
@@ -82,9 +87,6 @@ int main(){
 
     free(coloreo);
     coloreo = NULL;
-
-    free(RCD_array);
-    RCD_array = NULL;
 
     DestruccionDelGrafo(g);
     g = NULL;
