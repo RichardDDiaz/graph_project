@@ -99,9 +99,11 @@ Ejecucion de la carga de datos en un grafo g, apartir de un archivo de texto
 pasado por consola.
 */
 bool run_parser(Grafo g){
-    char path_name[100];
+    //char path_name[100];
     //char * nscanf = NULL;
-    if (fgets(path_name, 100, stdin) == NULL){
+    //char * c = fgets(path_name, 100, stdin);
+    
+    /*if (fgets(path_name, 100, stdin) == NULL){
         puts("Error al leer ruta del archivo");
         DestruccionDelGrafo(g);
         return false;
@@ -109,8 +111,9 @@ bool run_parser(Grafo g){
     else{
         puts("\n");
         puts(path_name);
-    }
-    FILE *file = fopen(strtok(path_name, "\n"), "r");
+    }*/
+    //FILE *file = fopen(strtok(path_name, "\n"), "r");
+    FILE *file = stdin;
     if (file == NULL){
         puts("Error al abrir archivo");
         DestruccionDelGrafo(g);
