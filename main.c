@@ -103,48 +103,42 @@ int main(int argc,char* argv[]){
     (c) Los otros α ordenes se obtienen usando OrdenFromKey a partir de definir 
         key usando AleatorizarKeys con distintos Rs, generados a partir de ρ.*/
 
-    // Matriz con todos los ordenamientos
-    //u32 * alfaOrdenamientos[atoi(a) + 2][NumeroDeVertices(g)];
-
-    
-    //u32 ** alfaOrdenamientos = malloc(sizeof(u32 *) * (u32)(atoi(a) + 2));
-    u32 * alfaOrdenamientos = malloc(sizeof *alfaOrdenamientos * (u32)(atoi(a) + 2));
-    printf("\nsdfdfsff");
-
-    if(alfaOrdenamientos == NULL){
-            fputs("\nError: Malloc en alfaOrdenamientos \n",stdout);
-            return 1;
+    // crear un arreglo de punteros de longitud (atoi(a) + 2) para guardar los alfaOrdenamientos
+    u32 ** alfaOrdenamientos = (u32 **)malloc(sizeof(u32 *) * (atoi(a) + 2));
+    for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
+        alfaOrdenamientos[i] = (u32 *)malloc(sizeof(u32) * NumeroDeVertices(g));
     }
-    for(u32 k=0; k<(u32)(atoi(a) + 2); k++){
-        alfaOrdenamientos[k]= malloc(sizeof(u32)*NumeroDeVertices(g));
-        if(alfaOrdenamientos[k] == NULL){
-            fputs("\nError: Malloc en alfaOrdenamientos[] \n",stdout);
-        }
+    // orden natural posicion 0
+    for (u32 i = 0; i < NumeroDeVertices(g); i++) {
+        alfaOrdenamientos[0][i] = i;
     }
+    // orden Welsh-Powell posicion 1 -- CHEQUEAR
+    u32 * key_grados = (u32 *)malloc(sizeof(u32) * NumeroDeVertices(g));
+    for (u32 i = 0; i < NumeroDeVertices(g); i++) {
+        key_grados[i] = Grado(i, g);
+    }
+    OrdenFromKey(NumeroDeVertices(g), key_grados, alfaOrdenamientos[1]);
+    free(key_grados);
+    // orden aleatorio posicion 2 a (atoi(a) + 1)
+    u32 * key_aleatorio = (u32 *)malloc(sizeof(u32) * NumeroDeVertices(g));
+    for (u32 i = 2; i < (u32)(atoi(a) + 2); i++) {
+        AleatorizarKeys(NumeroDeVertices(g), atoi(p), key_aleatorio);
+        OrdenFromKey(NumeroDeVertices(g), key_aleatorio, alfaOrdenamientos[i]);
+    }
+    free(key_aleatorio);
 
 
-    u32 * array_order = alfaOrdenamientos[0];
-    for(u32 j=0; j<NumeroDeVertices(g); j++){
-        array_order[j] = j;
+    // imprimir primera fila de alfaOrdenamientos
+    for (u32 i = 0; i < NumeroDeVertices(g); i++) {
         
+        printf("%lu ", alfaOrdenamientos[1][i]);
     }
 
-    u32 * array_key = malloc(sizeof(u32)*NumeroDeVertices(g));
-    for(u32 j=0; j<NumeroDeVertices(g); j++){
-        array_key[j] = Grado(j,g);
-    }
-    OrdenFromKey(NumeroDeVertices(g), array_key, alfaOrdenamientos[1]);
-    //for(u32 i=2; i<(u32)(atoi(a)+2); i++){
-
-    //}
-
-
-    // FREE
-    for(u32 k=0; k<NumeroDeVertices(g); k++){
-        free(alfaOrdenamientos[k]);
-        alfaOrdenamientos[k]= NULL;
+    // destruir grafo y liberar memoria de alfaOrdenamientos
+    DestruccionDelGrafo(g);
+    for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
+        free(alfaOrdenamientos[i]);
     }
     free(alfaOrdenamientos);
-    alfaOrdenamientos = NULL;
     return 0;
 }
