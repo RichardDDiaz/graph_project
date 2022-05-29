@@ -10,134 +10,141 @@
 #include "EstructuraGrafo.h"
 #include "helpers.h"
 
-int main(){
-    printf("Proyecto GRAFO iniciado");
+#define ErrorGrafo 4294967295
 
+/*
+1)
+Para empezar deber ́a requerir 3 parametros enteros α, β, ρ. Esto debe ser hecho de forma 
+tal que si compilamos a un ejecutable ejec podamos hacer
+./ejec α, β, ρ <enter>
+y luego cargar a mano el grafo, o bien poder usar el operador de redirecci ́on y hacer pej
+./ejec α, β, ρ <q10.txt
+donde q10.txt sea algun archivo con un grafo.
+
+*/
+
+int main(int argc,char* argv[]){
+    //printf("Proyecto GRAFO iniciado");
+
+    if (argc > 4){
+        printf("Error en la cantidad de argumentos");
+        return 1;
+    }
+    char * a = argv[1];
+    char * b = argv[2];
+    char * p = argv[3]; 
     /*-------------------------------------------------------*/
+    fputs(a, stdout);
+    fputs(b, stdout);
+    fputs(p, stdout);
+
+    // 2. Luego de cargar el grafo, imprime el n ́umero de v ́ertices, el n ́umero de lados y
+    // Delta.
+
     Grafo g = ConstruccionDelGrafo();
+    printf("grafo terminado\n");
     if(g!=NULL){
-        printf("== fun Numero Vertices: %lu ==\n", g->nver);
-        printf("== fun Numero Lados: %lu ==\n", g->mlados);
-        printf("== fun Delta: %lu ==\n", g->delta);
+        char num[NumeroDeLados(g)];
+        sprintf(num, "%lu", NumeroDeVertices(g));
+        fputs("\nVertice: " , stdout); fputs(num , stdout);
+        sprintf(num, "%lu", NumeroDeLados(g));
+        fputs("\nLados: " , stdout); fputs(num , stdout);
+        sprintf(num, "%lu", Delta(g));
+        fputs("\nDelta: " , stdout); fputs(num , stdout);
+    }
 
-        /*------------------------- BIPARTITO -------------------------------*/ 
-        
-        u32 * coloreoB = NULL;
+    /*
+    3. Luego de eso, corre Bipartito() para ver si el grafo es bipartito o no. 
+    Si lo es, declara eso y en caso que la cantidad de v ́ertices sea menor a 101, 
+    imprime las dos partes del grafo y termina la ejecuci ́on. 
+    Si no lo es, se declara eso y se continua con el resto
+    */
 
-        coloreoB = Bipartito(g);
-        if(coloreoB!=NULL){
-            if (bipartito_check(g,coloreoB)==1){
-                printf("== Verificado que es Bipartito ==\n");
+    u32 * coloreoB = NULL;
+    coloreoB = Bipartito(g);
+    if(coloreoB!=NULL){
+        fputs("\nGrafo bipartito\n", stdout);
+        if(NumeroDeVertices(g)<101){
+            //char num[ErrorGrafo-1];
+            // color 1
+            fputs("\nColoreados con 1: ", stdout);
+            for (u32 i = 0; i < NumeroDeVertices(g); i++) {
+                char num[Nombre(i, g)];
+                if(coloreoB[i]==1){
+                    sprintf(num, "%lu", Nombre(i, g));
+                    fputs(num, stdout); fputs(", ", stdout);
+                }
             }
-            else{
-                printf("== ERROR: Fallo el ColoreoB No Bipartito ==\n");
+            // color 2
+            fputs("\nColoreados con 2: ", stdout);
+            for (u32 i = 0; i < NumeroDeVertices(g); i++) {
+                if(coloreoB[i]==2){
+                    char num[Nombre(i, g)];
+                    sprintf(num, "%lu", Nombre(i, g));
+                    fputs(num, stdout); fputs(", ", stdout);
+                }
             }
-            free(coloreoB);
-        }else{
-            printf("== fun ColoreoB: NULL ==\n");
         }
-        /*-------------------------------------------------------------------*/ 
+    } else {
+        fputs("\nGrafo no bipartito\n", stdout);
+    }
 
+    /*4. Para el resto de la corrida se usar ́an procesos pseudoaleatorios, 
+    pej en AleatorizarVertices() uno de los parametros es R que funciona como semilla 
+    de aleatoriedad. La fuente “inicial”de aleatoriedad a partir de la cual todas 
+    las demas fuentes se vayan obteniendo ser ́a el par ́ametro ρ.*/
 
+    /*5. Construye α + 2 ordenamientos iniciales como se explica a continuaci ́on:
+    (a) Un orden se obtiene simplemente declarando Orden[i]=i, es decir, 
+        es el orden natural.
+    (b) Otro orden ser ́a el orden “Welsh-Powell”que consiste en ordenar los vertices 
+        de mayor a menor grado. Este orden se obtiene usando OrdenFromKey a partir 
+        de definir key[i]=Grado(i,G);
+    (c) Los otros α ordenes se obtienen usando OrdenFromKey a partir de definir 
+        key usando AleatorizarKeys con distintos Rs, generados a partir de ρ.*/
 
-        /*------------------------- GREEDY -------------------------------*/ 
-        
-        clock_t tgreedy_init, tgreedy_end;
-        double duration;
+    // Matriz con todos los ordenamientos
+    //u32 * alfaOrdenamientos[atoi(a) + 2][NumeroDeVertices(g)];
 
-        /*------------------------- GREEDY -------------------------------*/
-
-        // crear arreglo orden e inicializar con los indices de los vertices
-        u32 * orden = malloc(g->nver * sizeof(u32));
-        for(u32 i = 0; i < g->nver; i++){orden[i] = i;}
-        // Arreglo de colores
-        u32 * coloreo = malloc(g->nver * sizeof(u32));
-        // llamar a greedy
-        u32 nColores = 0;
-        tgreedy_init = clock();
-        for (u32 i = 0; i < 1000; i++){
-            nColores = Greedy(g, orden, coloreo);
-        }
-
-        tgreedy_end = clock();
-        printf("== fun Greedy: %lu ==\n", nColores);
-
-        duration = (double)(tgreedy_end - tgreedy_init ) / CLOCKS_PER_SEC;
-        printf("== fun Tiempo Greedy: %f ==\n", duration);
-        printf("== fun Tiempo Greedy: %d horas, %d minutos, %d segundos ==\n", 
-            (int)(duration)/3600, 
-            ((int)(duration)%3600)/60, 
-            (int)(duration)%60);
     
+    //u32 ** alfaOrdenamientos = malloc(sizeof(u32 *) * (u32)(atoi(a) + 2));
+    u32 * alfaOrdenamientos = malloc(sizeof *alfaOrdenamientos * (u32)(atoi(a) + 2));
+    printf("\nsdfdfsff");
 
-        // Verificar el coloreo de greedy sea propio
-        if(greedy_check(g, coloreo, nColores)){
-            printf("== fun Greedy: OK ==\n");
+    if(alfaOrdenamientos == NULL){
+            fputs("\nError: Malloc en alfaOrdenamientos \n",stdout);
+            return 1;
+    }
+    for(u32 k=0; k<(u32)(atoi(a) + 2); k++){
+        alfaOrdenamientos[k]= malloc(sizeof(u32)*NumeroDeVertices(g));
+        if(alfaOrdenamientos[k] == NULL){
+            fputs("\nError: Malloc en alfaOrdenamientos[] \n",stdout);
         }
-        else{
-            printf("== fun Greedy: ERROR ==\n");
-        }
-
-        //liberar los arreglos de orden y coloreo
-        free(orden);
-        orden = NULL;
-        free(coloreo);
-        coloreo = NULL;
-        */
-        /*--------------------------------------------------------*/
-
-        /*-----------------OrdenFromKey---------------------------*/
-        /*
-        u32 n = 10000;
-        // crear un arreglo de longitud 20 con numeros aleatorios
-        // entre 0 y 20
-        u32 * key_arreglo = malloc(n * sizeof(u32));
-        for(u32 i = 0; i < n; i++){
-            key_arreglo[i] = rand() % n;
-        }
-        printf("== ARREGLO KEY\n:");
-        for(u32 i = 0; i < n; i++){
-            printf("%lu ", key_arreglo[i]);
-        }
-        printf("\n");
-
-        u32 * orden_arreglo = malloc(n * sizeof(u32));
-
-        // llamar a ordenFromKey
-        char rorden = OrdenFromKey(n, key_arreglo, orden_arreglo);
-
-        if (rorden == '1'){
-            printf("== fun OrdenFromKey: ERROR, falta memoria ==\n");
-        }
-        else{
-            printf("== fun OrdenFromKey: OK, se ejecuto bien ==\n");
-        }
-        
-        // chequear que el orden sea correcto
-        if(ordenfromkey_check(n, key_arreglo, orden_arreglo)){
-            printf("== fun OrdenFromKey: OK ==\n");
-        }
-        else{
-            printf("== fun OrdenFromKey: ERROR ==\n");
-        }
-        
-        // liberar los arreglos
-        free(key_arreglo);
-        free(orden_arreglo);
-        key_arreglo = NULL;
-        orden_arreglo = NULL;
-        */
-        /*--------------------------------------------------------*/
+    }
 
 
-        
-        DestruccionDelGrafo(g);
-        return 0;
+    u32 * array_order = alfaOrdenamientos[0];
+    for(u32 j=0; j<NumeroDeVertices(g); j++){
+        array_order[j] = j;
         
     }
-    else{
-        printf("\n No se pudo construir el grafo. \n");
-        return 0;
+
+    u32 * array_key = malloc(sizeof(u32)*NumeroDeVertices(g));
+    for(u32 j=0; j<NumeroDeVertices(g); j++){
+        array_key[j] = Grado(j,g);
     }
-    
+    OrdenFromKey(NumeroDeVertices(g), array_key, alfaOrdenamientos[1]);
+    //for(u32 i=2; i<(u32)(atoi(a)+2); i++){
+
+    //}
+
+
+    // FREE
+    for(u32 k=0; k<NumeroDeVertices(g); k++){
+        free(alfaOrdenamientos[k]);
+        alfaOrdenamientos[k]= NULL;
+    }
+    free(alfaOrdenamientos);
+    alfaOrdenamientos = NULL;
+    return 0;
 }
