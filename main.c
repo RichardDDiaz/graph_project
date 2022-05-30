@@ -63,7 +63,7 @@ int main(int argc,char* argv[]){
     u32 * coloreoB = NULL;
     coloreoB = Bipartito(g);
     if(coloreoB!=NULL){
-        fputs("\nGrafo bipartito\n", stdout);
+        fputs("\nGrafo bipartito", stdout);
         if(NumeroDeVertices(g)<101){
             //char num[ErrorGrafo-1];
             // color 1
@@ -86,7 +86,7 @@ int main(int argc,char* argv[]){
             }
         }
     } else {
-        fputs("\nGrafo no bipartito\n", stdout);
+        fputs("\nGrafo no bipartito", stdout);
     }
 
     /*4. Para el resto de la corrida se usar ́an procesos pseudoaleatorios, 
@@ -128,6 +128,27 @@ int main(int argc,char* argv[]){
     free(key_aleatorio);
 
 
+    /* 6. Para cada uno de esos α + 2 ordenamientos iniciales debe correr Greedy 
+        e imprimir cuantos colores se obtienen. */
+    
+    // crear un arreglo de punteros de longitud (atoi(a) + 2) para guardar los colores
+    u32 ** colores = (u32 **)malloc(sizeof(u32 *) * (atoi(a) + 2));
+    for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
+        colores[i] = (u32 *)malloc(sizeof(u32) * NumeroDeVertices(g));
+    }
+    // correr greedy para cada orden
+    u32 ncolores = 0;
+    for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
+        ncolores = Greedy(g, alfaOrdenamientos[i], colores[i]);
+        char numColor[ncolores];
+        char numOrden[i+1];
+        fputs("\nColores orden n°", stdout); sprintf(numOrden, "%lu", i+1);
+        fputs(numOrden, stdout); fputs(": ", stdout);
+        sprintf(numColor, "%lu", ncolores); fputs(numColor, stdout);
+    }
+
+    // SE DEBE SEGUIR AQUI
+
     // imprimir primera fila de alfaOrdenamientos
     for (u32 i = 0; i < NumeroDeVertices(g); i++) {
         
@@ -138,7 +159,10 @@ int main(int argc,char* argv[]){
     DestruccionDelGrafo(g);
     for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
         free(alfaOrdenamientos[i]);
+        free(colores[i]);
     }
     free(alfaOrdenamientos);
+    free(colores);
+
     return 0;
 }
