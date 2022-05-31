@@ -135,12 +135,30 @@ int main(int argc,char* argv[]){
     u32 ** colores = (u32 **)malloc(sizeof(u32 *) * (atoi(a) + 2));
     for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
         colores[i] = (u32 *)malloc(sizeof(u32) * NumeroDeVertices(g));
+        if(colores[i] == NULL){
+            fputs("\nError: Asignación de memoria en colores.\n",stdout);
+            return 1;
+        }
     }
     // correr greedy para cada orden
-    u32 ncolores = 0;
+    u32 ncolores = ErrorGrafo;
+    u32 newncolores = 0;
     for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
-        ncolores = Greedy(g, alfaOrdenamientos[i], colores[i]);
-        char numColor[ncolores];
+        newncolores = Greedy(g, alfaOrdenamientos[i], colores[i]);
+        if(newncolores > ncolores){
+            char numColor[newncolores];
+            fputs("\nColoreo Greedy uso más colores que el coloreo anterior. Cant Colores anterior:", stdout);
+            sprintf(numColor, "%lu", ncolores);
+            fputs(numColor, stdout); 
+            fputs("\nCant colores en la nueva iteración: ", stdout);
+            sprintf(numColor, "%lu", newncolores);
+            fputs(numColor, stdout); 
+            return 1;
+        }
+        else{
+            ncolores = newncolores;
+        }
+        char numColor[ncolores+2];
         char numOrden[i+1];
         fputs("\nColores orden n°", stdout); sprintf(numOrden, "%lu", i+1);
         fputs(numOrden, stdout); fputs(": ", stdout);
@@ -149,12 +167,14 @@ int main(int argc,char* argv[]){
 
     // SE DEBE SEGUIR AQUI
 
+
+    printf("\n");
     // imprimir primera fila de alfaOrdenamientos
     for (u32 i = 0; i < NumeroDeVertices(g); i++) {
         
-        printf("%lu ", alfaOrdenamientos[1][i]);
+        printf(" %lu ", alfaOrdenamientos[1][i]);
     }
-
+    printf("\n");
     // destruir grafo y liberar memoria de alfaOrdenamientos
     DestruccionDelGrafo(g);
     for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
