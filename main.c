@@ -38,6 +38,10 @@ int main(int argc,char* argv[]){
     fputs(b, stdout);
     fputs(p, stdout);
 
+    u32 alfa = (u32)atoi(a);
+    u32 beta = (u32)atoi(b);
+    u32 phi = (u32)atoi(p);
+
     // 2. Luego de cargar el grafo, imprime el n ́umero de v ́ertices, el n ́umero de lados y
     // Delta.
 
@@ -105,9 +109,13 @@ int main(int argc,char* argv[]){
 
     // crear un arreglo de punteros de longitud (atoi(a) + 2) para guardar los alfaOrdenamientos
     fputs("\n Parte 5:",stdout);
-    u32 ** alfaOrdenamientos = (u32 **)malloc(sizeof(u32 *) * (atoi(a) + 2));
-    for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
+    u32 ** alfaOrdenamientos = (u32 **)malloc(sizeof(u32 *) * (alfa + 2));
+    for (u32 i = 0; i < alfa + 2; i++) {
         alfaOrdenamientos[i] = (u32 *)malloc(sizeof(u32) * NumeroDeVertices(g));
+        if(alfaOrdenamientos[i] == NULL){
+            fputs("\nError Pt5 de asignación de memoria en alfaOrdenamientos[i]",stdout);
+            return 1;
+        }
     }
     // orden natural posicion 0
     for (u32 i = 0; i < NumeroDeVertices(g); i++) {
@@ -120,10 +128,10 @@ int main(int argc,char* argv[]){
     }
     OrdenFromKey(NumeroDeVertices(g), key_grados, alfaOrdenamientos[1]);
     free(key_grados);
-    // orden aleatorio posicion 2 a (atoi(a) + 1)
+    // orden aleatorio posicion 2 a (alfa + 1)
     u32 * key_aleatorio = (u32 *)malloc(sizeof(u32) * NumeroDeVertices(g));
-    for (u32 i = 2; i < (u32)(atoi(a) + 2); i++) {
-        AleatorizarKeys(NumeroDeVertices(g), atoi(p), key_aleatorio);
+    for (u32 i = 2; i < alfa + 2; i++) {
+        AleatorizarKeys(NumeroDeVertices(g), phi, key_aleatorio);
         OrdenFromKey(NumeroDeVertices(g), key_aleatorio, alfaOrdenamientos[i]);
     }
     free(key_aleatorio);
@@ -132,30 +140,27 @@ int main(int argc,char* argv[]){
     /* 6. Para cada uno de esos α + 2 ordenamientos iniciales debe correr Greedy 
         e imprimir cuantos colores se obtienen. */
     
-    // crear un arreglo de punteros de longitud (atoi(a) + 2) para guardar los colores
+    // crear un arreglo de punteros de longitud (alfa + 2) para guardar los coloreos
     fputs("\n Parte 6:",stdout);
-    u32 ** colores = (u32 **)malloc(sizeof(u32 *) * (atoi(a) + 2));
-    for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
+    u32 ** colores = (u32 **)malloc(sizeof(u32 *) * (alfa + 2));
+    for (u32 i = 0; i < (alfa + 2); i++) {
         colores[i] = (u32 *)malloc(sizeof(u32) * NumeroDeVertices(g));
         if(colores[i] == NULL){
             fputs("\nError: Asignación de memoria en colores.\n",stdout);
             return 1;
         }
     }
-    // correr greedy para cada orden
-    u32 ncolores = ErrorGrafo;
-    for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
-        ncolores = Greedy(g, alfaOrdenamientos[i], colores[i]);
-        char numColor[ncolores+2];
-        char numOrden[i+1];
-        fputs("\nColores orden n°", stdout); sprintf(numOrden, "%lu", i+1);
-        fputs(numOrden, stdout); fputs(": ", stdout);
-        sprintf(numColor, "%lu", ncolores); fputs(numColor, stdout);
+
+    // Arreglo para guardar la cantidad de colores usadas en los a+2 ordenamientos
+    u32 * alfacolores = malloc(sizeof(u32)*NumeroDeVertices(g));
+    if(alfacolores == NULL){
+        fputs("\nError Pt6 de asignación de memoria a alfacolores.",stdout);
+        return 1;
     }
 
 
-    u32 * reordenb = malloc(sizeof(u32)*NumeroDeVertices(g));
-        if(reordenb == NULL){
+    u32 * indiceMayorColor = malloc(sizeof(u32)*NumeroDeVertices(g)); //reordenb
+        if(indiceMayorColor == NULL){
             fputs("ERROR: Asignación de memoria a reordenb",stdout);
             return 1;
         }
@@ -164,90 +169,152 @@ int main(int argc,char* argv[]){
             fputs("ERROR: Asignación de memoria a reordenb",stdout);
             return 1;
         }
-     u32 * reordend = malloc(sizeof(u32)*NumeroDeVertices(g));
-        if(reordend == NULL){
-            fputs("ERROR: Asignación de memoria a reordenb",stdout);
-            return 1;
-        }
     
-    u32 * coloreoGreddy2 = malloc(sizeof(u32)*NumeroDeVertices(g));
-        if(coloreoGreddy2 == NULL){
+    u32 * reorden = malloc(sizeof(u32)*NumeroDeVertices(g));
+        if(reorden == NULL){
             fputs("ERROR: Asignación de memoria a reordenb",stdout);
             return 1;
         }
 
+    u32 * coloreoFinal =  malloc(sizeof(u32)*NumeroDeVertices(g));
+        if(coloreoFinal == NULL){
+            fputs("ERROR: Asignación de memoria a reordenb",stdout);
+            return 1;
+        }
+
+
+    u32 mejorAlfaI = 0;
     
-    u32 cantColores = 0;
-    u32 cantColoresAnteriores = ErrorGrafo;
-    for(u32 i=0; i<(u32)atoi(b); i++){  
-        if(i == 0){
-            OrdenFromKey(NumeroDeVertices(g),colores[0] , reordenb);
-        }     
-        else{
-            OrdenFromKey(NumeroDeVertices(g),coloreoGreddy2 , reordenb);
-        } 
-        
-        cantColores = Greedy(g, reordenb, coloreoGreddy);
-        char numColor[cantColores+1];
-        fputs("\nCantidad de colores: ",stdout);
-        sprintf(numColor, "%lu", cantColores); 
-        fputs(numColor,stdout);
-        
-        if(cantColores > cantColoresAnteriores){
-            fputs("\nPt6 - b: ERROR: Se aumento la cantidad de colores.", stdout);
-            fputs("\nCantidad de colores anteriores: ",stdout);
-            sprintf(numColor, "%lu", cantColoresAnteriores); 
+    u32 ncolores = ErrorGrafo;
+    for (u32 i = 0; i < alfa+2; i++) {
+        // correr greedy para cada orden alfa
+        ncolores = Greedy(g, alfaOrdenamientos[i], colores[i]);
+        alfacolores[i] = ncolores;
+        char numColor[ncolores+2];
+        char numOrden[i+1];
+        fputs("\nColores orden n°", stdout); sprintf(numOrden, "%lu", i+1);
+        fputs(numOrden, stdout); fputs(": ", stdout);
+        sprintf(numColor, "%lu", ncolores); fputs(numColor, stdout);
+
+
+        u32 cantColores = 0;
+        u32 cantColoresAnteriores = ncolores;
+        for(u32 j=0; j<beta; j++){ 
+
+
+            // Parte a
+
+            // Reordenamos segun el color de Mayor a menor
+            OrdenFromKey(NumeroDeVertices(g),colores[i] , indiceMayorColor);
+            
+            // Parte b
+            cantColores = Greedy(g, indiceMayorColor, coloreoGreddy);
+
+            char numColor[cantColores+1];
+            fputs("\nCantidad de colores: ",stdout);
+            sprintf(numColor, "%lu", cantColores); 
             fputs(numColor,stdout);
-            return 1;
-        }
-        else{
-            cantColoresAnteriores = cantColores;
-        }
-        // parte c
-        u32 * reordenPC = PermutarColores(NumeroDeVertices(g), coloreoGreddy,(u32)atoi(p));
-        OrdenFromKey(NumeroDeVertices(g),reordenPC, reordenb);
+            
+            // Chequeamos si aumento la cantidad de colores usados
+            if(cantColores > cantColoresAnteriores){
+                fputs("\nPt6 - b: ERROR: Se aumento la cantidad de colores.", stdout);
+                fputs("\nCantidad de colores anteriores: ",stdout);
+                sprintf(numColor, "%lu", cantColoresAnteriores); 
+                fputs(numColor,stdout);
+                return 1;
+            }
+            else{
+                cantColoresAnteriores = cantColores;
+            }
+            // parte c
+            u32 * keyPC = PermutarColores(NumeroDeVertices(g), coloreoGreddy,phi);
+            OrdenFromKey(NumeroDeVertices(g),keyPC, reorden);
 
-        // parte d
-        cantColores = Greedy(g, reordenb, coloreoGreddy2);
-        char numColor2[cantColores+1];
-        fputs("\nCantidad de colores: ",stdout);
-        sprintf(numColor2, "%lu", cantColores); 
-        fputs(numColor2,stdout);
-        
-        if(cantColores > cantColoresAnteriores){
-            fputs("\nPt6 - d: ERROR: Se aumento la cantidad de colores.", stdout);
-            fputs("\nCantidad de colores anteriores: ",stdout);
-            sprintf(numColor2, "%lu", cantColoresAnteriores); 
+            // parte d
+            cantColores = Greedy(g, reorden, coloreoGreddy);
+            char numColor2[cantColores+1];
+            fputs("\nCantidad de colores: ",stdout);
+            sprintf(numColor2, "%lu", cantColores); 
             fputs(numColor2,stdout);
-            return 1;
-        }
-        else{
-            cantColoresAnteriores = cantColores;
-        }
+            
+            // Chequemos si aumento la cantidad de colores usados
+            if(cantColores > cantColoresAnteriores){
+                fputs("\nPt6 - d: ERROR: Se aumento la cantidad de colores.", stdout);
+                fputs("\nCantidad de colores anteriores: ",stdout);
+                sprintf(numColor2, "%lu", cantColoresAnteriores); 
+                fputs(numColor2,stdout);
+                return 1;
+            }
+            else{
+                cantColoresAnteriores = cantColores;
+            }
 
-        // parte e
-        u32  * reordenBC = RecoloreoCardinalidadDecrecienteBC(NumeroDeVertices(g), coloreoGreddy2);
-        OrdenFromKey(NumeroDeVertices(g), reordenBC, reordenb);
+            // parte e
+            u32  * keyBC = RecoloreoCardinalidadDecrecienteBC(NumeroDeVertices(g), coloreoGreddy);
+            OrdenFromKey(NumeroDeVertices(g), keyBC, reorden);
 
-        cantColores = Greedy(g, reordenb, coloreoGreddy2);
-        char numColor3[cantColores+1];
-        fputs("\nCantidad de colores: ",stdout);
-        sprintf(numColor3, "%lu", cantColores); 
-        fputs(numColor3,stdout);
-        
-        if(cantColores > cantColoresAnteriores){
-            fputs("\nPt6 - e: ERROR: Se aumento la cantidad de colores.", stdout);
-            fputs("\nCantidad de colores anteriores: ",stdout);
-            sprintf(numColor3, "%lu", cantColoresAnteriores); 
+            // parte f
+            cantColores = Greedy(g, reorden, coloreoGreddy);
+            char numColor3[cantColores+1];
+            fputs("\nCantidad de colores: ",stdout);
+            sprintf(numColor3, "%lu", cantColores); 
             fputs(numColor3,stdout);
-            return 1;
+            
+            // Chequemos si aumento la cantidad de colores usados
+            if(cantColores > cantColoresAnteriores){
+                fputs("\nPt6 - e: ERROR: Se aumento la cantidad de colores.", stdout);
+                fputs("\nCantidad de colores anteriores: ",stdout);
+                sprintf(numColor3, "%lu", cantColoresAnteriores); 
+                fputs(numColor3,stdout);
+                return 1;
+            }
+            else{
+                cantColoresAnteriores = cantColores;
+            }
         }
-        else{
-            cantColoresAnteriores = cantColores;
-        }
-        
 
+
+        
+        fputs("\nParte 7\n",stdout);
+        // Verificamos si el color obtenido es mejor que el del alfa ordenamiento inicial
+            if(cantColores >= alfacolores[i]){
+                mejorAlfaI = i;
+            }
+            else{
+                // Copiamos el arreglo
+                for(u32 k=0; k<NumeroDeVertices(g); k++){
+                    coloreoFinal[k] = coloreoGreddy[k];
+                }
+                mejorAlfaI = ErrorGrafo;
+            }
+        
     }
+
+    if(mejorAlfaI != ErrorGrafo){
+        // Copiamos el arreglo
+        for(u32 k=0; k<NumeroDeVertices(g); k++){
+            coloreoFinal[k] = colores[mejorAlfaI][k];
+        }
+    }
+
+
+
+    
+    // Parte 8
+    for(u32 i=0; i<((alfa+1)*3*beta)){
+        
+    }
+
+
+
+
+
+
+
+
+
+
+    
 
     /*printf("\n");
     // imprimir primera fila de alfaOrdenamientos
@@ -258,7 +325,7 @@ int main(int argc,char* argv[]){
     printf("\n");
     // destruir grafo y liberar memoria de alfaOrdenamientos
     DestruccionDelGrafo(g);
-    for (u32 i = 0; i < (u32)(atoi(a) + 2); i++) {
+    for (u32 i = 0; i < alfa + 2; i++) {
         free(alfaOrdenamientos[i]);
         free(colores[i]);
     }
